@@ -228,7 +228,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 break;
             default:
                 errorDialogBox("Unknown command: " + commandString, "Error");
-                throw new UnsupportedOperationException("unknown command: " + commandString);
+                throw new IllegalArgumentException("unknown command: " + commandString);
         }
     }
 
@@ -238,19 +238,19 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
             String key = keyValue[0];
 
             switch (key) {
-                case "COLOR":
+                case "COLOR", "FGCOLOR":
                     String color_str = keyValue[1];
                     Color newColor = parseColor(color_str);
                     appService.setColor(newColor);
                     System.out.println("color set to: " + newColor);
                     break;
-                case "FILLCOLOR":
+                case "FILLCOLOR", "FILL":
                     String rgb_fill = keyValue[1];
                     Color fillColor = parseColor(rgb_fill);
                     appService.setFillColor(fillColor);
                     System.out.println("fill color set to: " + fillColor);
                     break;
-                case "THICKNESS":
+                case "THICKNESS", "THICK", "LINE_THICKNESS":
                     int thickness = Integer.parseInt(keyValue[1]);
                     appService.setLineThickness(thickness);
                     System.out.println("line thickness set to " + thickness + " pixels");
@@ -260,31 +260,31 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     switch (called_shape) {
                         case "LINE":
                             appService.setShapeMode(ShapeMode.Line);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Line);
+                            shapeSetDialogBox(ShapeMode.Line);
                             break;
-                        case "RECTANGLE":
+                        case "RECTANGLE", "RECT":
                             appService.setShapeMode(ShapeMode.Rectangle);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Rectangle);
+                            shapeSetDialogBox(ShapeMode.Rectangle);
                             break;
                         case "TEXT":
                             appService.setShapeMode(ShapeMode.Text);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Text);
+                            shapeSetDialogBox(ShapeMode.Text);
                             break;
-                        case "ELLIPSE":
+                        case "ELLIPSE", "CIRCLE":
                             appService.setShapeMode(ShapeMode.Ellipse);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Ellipse);
+                            shapeSetDialogBox(ShapeMode.Ellipse);
                             break;
                         case "CHAIN":
                             appService.setShapeMode(ShapeMode.Chain);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Chain);
+                            shapeSetDialogBox(ShapeMode.Chain);
                             break;
-                        case "IMAGE":
+                        case "IMAGE", "PICTURE":
                             appService.setShapeMode(ShapeMode.Image);
-                            shapeSetDialogBox("Shape set to " + ShapeMode.Image);
+                            shapeSetDialogBox(ShapeMode.Image);
                             break;
                         default:
                             errorDialogBox("Unknown shape: " + called_shape, "Shape Not Present");
-                            throw new UnsupportedOperationException("unknown shape: " + called_shape);
+                            throw new IllegalArgumentException("unknown shape: " + called_shape);
                     }
                     break;
                 default:
@@ -344,16 +344,17 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
             if (result == JFileChooser.APPROVE_OPTION) {
                 String filename = fileChooser.getSelectedFile().getAbsolutePath();
                 appService.setImageFileName(filename);
+                shape = new Picture(
+                        new Point(startX, startY),
+                        new Point(endX, endY),
+                        appService.getColor(),
+                        appService.getImageFileName(),
+                        appService.getLineThickness()
+                );
+                appService.addShape(shape);
+                coordinateStringPrint(ShapeMode.Image, startX, startY, endX, endY);
             }
-            shape = new Picture(
-                    new Point(startX, startY),
-                    new Point(endX, endY),
-                    appService.getColor(),
-                    appService.getImageFileName(),
-                    appService.getLineThickness()
-            );
-            appService.addShape(shape);
-            coordinateStringPrint(ShapeMode.Image, startX, startY, endX, endY);
+
         } else if (shapeType.equals("TEXT")) {
 //            String text = appService.getTextContent();
             String text = "test";
@@ -386,9 +387,9 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    void shapeSetDialogBox(String msg) {
+    void shapeSetDialogBox(ShapeMode shape_type) {
         JOptionPane.showMessageDialog(null,
-                msg,
+                "Shape set to " + shape_type,
                 "Shape set",
                 JOptionPane.INFORMATION_MESSAGE);
     }
