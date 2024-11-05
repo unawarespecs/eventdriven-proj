@@ -2,6 +2,7 @@ package io.github.unawarespecs.rubber.service;
 
 import io.github.unawarespecs.appfx.model.Shape;
 import io.github.unawarespecs.rubber.model.Rectangle;
+import io.github.unawarespecs.rubber.model.Text;
 import io.github.unawarespecs.rubber.model.*;
 import org.w3c.dom.*;
 
@@ -66,6 +67,8 @@ public class XmlDocumentService implements DocumentService {
                     shapeType = "Rectangle";
                 } else if (shape.getClass() == Picture.class) {
                     shapeType = "Picture";
+                } else if (shape.getClass() == Text.class) {
+                    shapeType = "Text";
                 }
                 attr.setValue(shapeType);
 
@@ -89,6 +92,11 @@ public class XmlDocumentService implements DocumentService {
                 if (shape.getClass() == Picture.class) {
                     attr = document.createAttribute("image_filename");
                     attr.setValue(((Picture) shape).getImageFilename());
+                } else if (shape.getClass() == Text.class) {
+                    attr = document.createAttribute("text_content");
+                    attr.setValue(((Text) shape).getText());
+                    attr = document.createAttribute("font");
+                    attr.setValue(String.valueOf(((Text) shape).getFont()));
                 } else {
                     attr = document.createAttribute("fill");
                     attr.setValue(String.valueOf(shape.getFill()));

@@ -162,7 +162,7 @@ public class DrawingAppService implements AppService {
     public void  setFileName(String filename){
 
         drawingState.setFilename(filename);
-        setTitle(filename);
+        setTitle("Go Draw - " + filename);
     }
 
     @Override

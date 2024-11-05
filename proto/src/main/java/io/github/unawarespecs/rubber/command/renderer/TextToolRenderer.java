@@ -23,11 +23,17 @@ public class TextToolRenderer extends BaseRenderer {
         Font currentFont = (font != null) ? font : fallback;
         java.awt.Color color = shape.getColor();
         int fontSize = ((Text) shape).getFontSize();
-        g.setFont(currentFont);
-        g.setFont(g.getFont().deriveFont((float) fontSize));
-        g.setColor(color);
 
-        g.drawString(enteredText, start.x, start.y);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setFont(currentFont);
+        g2.setFont(g.getFont().deriveFont((float) fontSize));
+        g2.setColor(color);
+
+        g2.drawString(enteredText, start.x, start.y);
+
+        if(shape.isSelected()){
+            showHandles(g, shape);
+        }
     }
 
 }

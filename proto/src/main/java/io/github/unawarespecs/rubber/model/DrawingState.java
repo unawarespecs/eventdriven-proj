@@ -29,6 +29,7 @@ public class DrawingState {
         this.editMode = EditMode.Create;
         this.color = Color.GREEN;
         this.lineThickness = 1;
+        this.textFont = new Font("Arial", Font.PLAIN, 12);
         shapes = new ArrayList<>();
     }
 }

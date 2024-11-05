@@ -2,11 +2,13 @@ package io.github.unawarespecs.rubber.model;
 
 import io.github.unawarespecs.appfx.model.Shape;
 import io.github.unawarespecs.rubber.command.renderer.TextToolRenderer;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.awt.*;
 
-@Data
+@Getter
+@Setter
 public class Text extends Shape {
     private String text;
     private java.awt.Font font;

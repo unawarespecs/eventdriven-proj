@@ -261,7 +261,6 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                         case "LINE":
                             appService.setShapeMode(ShapeMode.Line);
                             shapeSetDialogBox("Shape set to " + ShapeMode.Line);
-
                             break;
                         case "RECTANGLE":
                             appService.setShapeMode(ShapeMode.Rectangle);
@@ -355,7 +354,25 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
             );
             appService.addShape(shape);
             coordinateStringPrint(ShapeMode.Image, startX, startY, endX, endY);
-        } else if (shapeType.equals("CHAIN") | shapeType.equals("TEXT")) {
+        } else if (shapeType.equals("TEXT")) {
+//            String text = appService.getTextContent();
+            String text = "test";
+            Font font = appService.getTextFont();
+            int font_size = appService.getTextFont().getSize();
+
+            shape = new Text(
+                    new Point(startX, startY),
+                    new Point(endX, endY),
+                    text,
+                    font,
+                    font_size,
+                    appService.getColor(),
+                    appService.getLineThickness()
+            );
+
+            appService.addShape(shape);
+            coordinateStringPrint(ShapeMode.Text, startX, startY, endX, endY);
+        } else if (shapeType.equals("CHAIN")) {
             errorDialogBox("This shape is present, but drawing thru command line is not yet implemented [FIXME].",
                     "Shape Not Implemented");
             throw new UnsupportedOperationException("not supported yet for these shape types");

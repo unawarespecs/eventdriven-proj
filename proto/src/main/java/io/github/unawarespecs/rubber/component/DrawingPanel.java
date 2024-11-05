@@ -197,7 +197,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
                     Attr attr = document.createAttribute("x");
                     element.setAttributeNode(attr);
                 } else if (shape.getClass() == Rectangle.class) {
-                    Element element = document.createElement("Ellipse");
+                    Element element = document.createElement("Rectangle");
                     Attr attr = document.createAttribute("x");
                     element.setAttributeNode(attr);
                 }
