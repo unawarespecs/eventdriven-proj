@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class PropertySheet extends PropertyPanel {
 
-    public PropertySheet(PropertyOptions options){
+    public PropertySheet(PropertyOptions options) {
         super(options);
 
     }
@@ -30,8 +30,8 @@ public class PropertySheet extends PropertyPanel {
     public void populateTable(AppService appService) {
         PropertyPanel propertyTable = this;
         propertyTable.addEventListener(new EventListener(appService));
-        Shape shape  = appService.getSelectedShape();
-        if ( shape == null) {
+        Shape shape = appService.getSelectedShape();
+        if (shape == null) {
             propertyTable.clear();
             String objectType = "Application";
             StringProperty targetProp = new StringProperty("Object Type", objectType);
@@ -82,16 +82,15 @@ public class PropertySheet extends PropertyPanel {
                 System.out.println("Pressed");
             });
             propertyTable.addProperty(prop9);
-        }
-        else {
+        } else {
             propertyTable.clear();
             StringProperty targetProp = new StringProperty("Object Type", "Shape");
             propertyTable.addProperty(targetProp);
 
             Item RectangleItem = new Item<ShapeMode>(ShapeMode.Rectangle, "Rectangle");
             Item EllipseItem = new Item<ShapeMode>(ShapeMode.Ellipse, "Ellipse");
-            Item LineItem =    new Item<ShapeMode>(ShapeMode.Line, "Line");
-            Item ImageItem = new Item<ShapeMode>(ShapeMode.Image,"Image");
+            Item LineItem = new Item<ShapeMode>(ShapeMode.Line, "Line");
+            Item ImageItem = new Item<ShapeMode>(ShapeMode.Image, "Image");
             Item TextItem = new Item<ShapeMode>(ShapeMode.Text, "Text");
             SelectionProperty shapeProp = new SelectionProperty<>(
                     "Current Shape",
@@ -105,18 +104,20 @@ public class PropertySheet extends PropertyPanel {
             );
             propertyTable.addProperty(shapeProp);
 
-            SelectionCellComponent  selectionComponent =  propertyTable.getSelectionCellComponent();
+            SelectionCellComponent selectionComponent = propertyTable.getSelectionCellComponent();
 
 
             String className = shape.getClass().getSimpleName();
-            if(className.equals("Rectangle")) {
+            if (className.equals("Rectangle")) {
                 selectionComponent.setCellEditorValue(RectangleItem);
-            }
-            else if(className.equals("Ellipse")) {
+            } else if (className.equals("Ellipse")) {
                 selectionComponent.setCellEditorValue(EllipseItem);
-            }
-            else if(className.equals("Line")) {
+            } else if (className.equals("Line")) {
                 selectionComponent.setCellEditorValue(LineItem);
+            } else if (className.equals("Image")) {
+                selectionComponent.setCellEditorValue(ImageItem);
+            } else if (className.equals("Text")) {
+                selectionComponent.setCellEditorValue(TextItem);
             }
 
             IntegerProperty xloc = new IntegerProperty("X Location ", shape.getLocation().x);
