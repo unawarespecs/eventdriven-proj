@@ -176,6 +176,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mouseMoved(MouseEvent e) {
         drawingStatusPanel.setPoint(e.getPoint());
+        displaySelectedShapeMode(appService.getShapeMode());
     }
 
     public void save(String filename) {
@@ -216,5 +217,9 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
         } catch (Exception e) {
             System.out.println("Error occurred " + e.getMessage());
         }
+    }
+
+    void displaySelectedShapeMode(ShapeMode shape_type) {
+        drawingStatusPanel.setShapeMode(shape_type);
     }
 }

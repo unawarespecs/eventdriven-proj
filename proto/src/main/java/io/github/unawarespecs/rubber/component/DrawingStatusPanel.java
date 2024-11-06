@@ -40,6 +40,6 @@ public class DrawingStatusPanel extends JPanel {
         yText.setText("y = " + String.valueOf(point.y));
     }
     public void setShapeMode(ShapeMode shapeMode){
-        lblShape.setText("shape = " + String.valueOf(shapeMode));
+        lblShape.setText("shape = " + shapeMode);
     }
 }
