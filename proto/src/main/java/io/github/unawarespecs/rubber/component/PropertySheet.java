@@ -91,12 +91,16 @@ public class PropertySheet extends PropertyPanel {
             Item RectangleItem = new Item<ShapeMode>(ShapeMode.Rectangle, "Rectangle");
             Item EllipseItem = new Item<ShapeMode>(ShapeMode.Ellipse, "Ellipse");
             Item LineItem =    new Item<ShapeMode>(ShapeMode.Line, "Line");
+            Item ImageItem = new Item<ShapeMode>(ShapeMode.Image,"Image");
+            Item TextItem = new Item<ShapeMode>(ShapeMode.Text, "Text");
             SelectionProperty shapeProp = new SelectionProperty<>(
                     "Current Shape",
                     new ArrayList<>(Arrays.asList(
                             RectangleItem,
                             EllipseItem,
-                            LineItem
+                            LineItem,
+                            ImageItem,
+                            TextItem
                     ))
             );
             propertyTable.addProperty(shapeProp);
