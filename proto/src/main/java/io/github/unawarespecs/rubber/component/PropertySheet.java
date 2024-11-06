@@ -43,7 +43,9 @@ public class PropertySheet extends PropertyPanel {
                     new ArrayList<>(Arrays.asList(
                             new Item<>(ShapeMode.Rectangle, "Rectangle"),
                             new Item<>(ShapeMode.Ellipse, "Ellipse"),
-                            new Item<>(ShapeMode.Line, "Line")
+                            new Item<>(ShapeMode.Line, "Line"),
+                            new Item<>(ShapeMode.Image, "Picture"),
+                            new Item<>(ShapeMode.Text, "Entered Text")
                     ))
             );
             shapeProp.setValue(shape);

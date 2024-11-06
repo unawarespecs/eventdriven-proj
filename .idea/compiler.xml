@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="appfx" />
         <module name="parser" />
+        <module name="fontchooser" />
         <module name="commandfx" />
         <module name="prop" />
         <module name="proto" />
