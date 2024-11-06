@@ -23,6 +23,15 @@ public class XmlDocumentService implements DocumentService {
         this.drawingState = drawingState;
     }
 
+    public int parseStyle(String styleString) {
+        return switch (styleString.toLowerCase()) {
+            case "bold" -> Font.BOLD;
+            case "italic" -> Font.ITALIC;
+            case "bolditalic" -> Font.BOLD | Font.ITALIC;
+            default -> Font.PLAIN;
+        };
+    }
+
     @Override
     public void save() {
         saveAs(drawingState.getFilename());
@@ -126,6 +135,25 @@ public class XmlDocumentService implements DocumentService {
         }
     }
 
+//    public Color convertColor(String colorStr) {
+//        Color color;
+//        int rIndex = colorStr.indexOf("r=");
+//        colorStr = colorStr.substring(rIndex + 2);
+//        int nextIndex = colorStr.indexOf(",");
+//        String rStr = colorStr.substring(0, nextIndex);
+//        colorStr = colorStr.substring(nextIndex + 3);
+//        nextIndex = colorStr.indexOf(",");
+//        String gStr = colorStr.substring(0, nextIndex);
+//        colorStr = colorStr.substring(nextIndex + 3);
+//        nextIndex = colorStr.indexOf("]");
+//        String bStr = colorStr.substring(0, nextIndex);
+//        int rcolor = Integer.parseInt(rStr);
+//        int gcolor = Integer.parseInt(gStr);
+//        int bcolor = Integer.parseInt(bStr);
+//        color = new Color(rcolor, gcolor, bcolor);
+//        return color;
+//    }
+
     @Override
     public void open(String filename) {
         drawingState.getShapes().clear();
@@ -177,6 +205,7 @@ public class XmlDocumentService implements DocumentService {
                 Font textFont = null;
                 attr = map.getNamedItem("font");
                 if (attr != null) {
+                    textFont = parseFont(attr.getNodeValue());
                     System.out.println(attr.getNodeValue());
                 }
 
@@ -198,6 +227,13 @@ public class XmlDocumentService implements DocumentService {
                             throw new IllegalArgumentException("Error: Picture shape missing image_filename attribute.");
                         }
                     }
+                    case "Text" -> {
+                        if (textFont != null && textContent != null) {
+                            shape = new Text(start, end, textContent, textFont, textFont.getSize(), color, thickness);
+                        } else {
+                            throw new IllegalArgumentException("Error: Text shape missing text_content/font attribute.");
+                        }
+                    }
                     default -> System.out.println("Unknown shape type: " + attr.getNodeValue());
                 }
                 drawingState.getShapes().add(shape);
@@ -206,25 +242,6 @@ public class XmlDocumentService implements DocumentService {
             System.out.println(e);
         }
     }
-
-//    public Color convertColor(String colorStr) {
-//        Color color;
-//        int rIndex = colorStr.indexOf("r=");
-//        colorStr = colorStr.substring(rIndex + 2);
-//        int nextIndex = colorStr.indexOf(",");
-//        String rStr = colorStr.substring(0, nextIndex);
-//        colorStr = colorStr.substring(nextIndex + 3);
-//        nextIndex = colorStr.indexOf(",");
-//        String gStr = colorStr.substring(0, nextIndex);
-//        colorStr = colorStr.substring(nextIndex + 3);
-//        nextIndex = colorStr.indexOf("]");
-//        String bStr = colorStr.substring(0, nextIndex);
-//        int rcolor = Integer.parseInt(rStr);
-//        int gcolor = Integer.parseInt(gStr);
-//        int bcolor = Integer.parseInt(bStr);
-//        color = new Color(rcolor, gcolor, bcolor);
-//        return color;
-//    }
 
     public Color convertColor(String colorStr) {
         Color fallbackColor = Color.WHITE; // You can choose any color you want
@@ -267,4 +284,46 @@ public class XmlDocumentService implements DocumentService {
         }
     }
 
+    public Font parseFont(String fontString) {
+        // Remove the prefix and suffix
+        String cleanedString = fontString.replace("java.awt.Font[", "").replace("]", "");
+
+        // Split the string into key-value pairs
+        String[] pairs = cleanedString.split(",");
+
+        String family = "";
+        String name = "";
+        int style = Font.PLAIN;
+        int size = 12; // Default size
+
+        for (String pair : pairs) {
+            String[] keyValue = pair.split("=");
+            if (keyValue.length == 2) {
+                String key = keyValue[0].trim();
+                String value = keyValue[1].trim();
+
+                switch (key) {
+                    case "family":
+                        family = value;
+                        break;
+                    case "name":
+                        name = value;
+                        break;
+                    case "style":
+                        style = parseStyle(value);
+                        break;
+                    case "size":
+                        size = Integer.parseInt(value);
+                        break;
+                }
+            }
+        }
+
+        // Use the name as family if family is empty
+        if (family.isEmpty()) {
+            family = name;
+        }
+
+        return new Font(family, style, size);
+    }
 }
