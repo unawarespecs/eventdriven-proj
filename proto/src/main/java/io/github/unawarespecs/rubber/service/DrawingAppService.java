@@ -181,6 +181,7 @@ public class DrawingAppService implements AppService {
     public void close() {
         drawingState.getShapes().clear();
         drawingPanel.repaint();
+        mainFrame.setTitle("Go Draw (New)");
     }
 
     public void exit() {

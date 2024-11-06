@@ -16,42 +16,46 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.HashMap;
 
 public class DrawingMenuBar extends JMenuBar implements ActionListener {
 
+    @Getter
+    @Setter
+    BasicStroke basicStroke = new BasicStroke(10);
     private AppService appService;
-
     private JMenuItem openMenuItem = new JMenuItem("Open");
     private JMenuItem saveMenuItem = new JMenuItem("Save");
     private JMenuItem saveAsMenuItem = new JMenuItem("Save as");
     private JMenuItem closeMenuItem = new JMenuItem("Close");
     private JMenuItem exitMenuItem = new JMenuItem("Exit");
-
     private JMenuItem undoMenuItem = new JMenuItem("Undo");
     private JMenuItem redoMenuItem = new JMenuItem("Redo");
-
     private JMenuItem thinLineMenuItem = new JMenuItem("Thin");
     private JMenuItem mediumLineMenuItem = new JMenuItem("Medium");
     private JMenuItem thickLineMenuItem = new JMenuItem("Thick");
-
     private JMenuItem colorMenu = new JMenu("Color");
-
     private JMenuItem foreColorMenuItem = new JMenuItem("Foreground");
     private JMenuItem fillColorMenuItem = new JMenuItem("FillColor");
-
     private JMenuItem lineMenuItem = new JMenuItem("Line");
-
     private JMenuItem ellipseMenuItem = new JMenuItem("Ellipse");
-
     private JMenuItem rectangleMenuItem = new JMenuItem("Rectangle");
     private JMenuItem curveMenuItem = new JMenuItem("Curve");
+    private JMenuItem textMenuItem = new JMenuItem("Text Tool");
+    private JMenuItem imageMenuItem = new JMenuItem("Insert Picture/Image");
     private JMenuItem selectMenuItem = new JMenuItem("Select");
-
     private JMenuItem fontMenuItem = new JMenuItem("Choose Font");
+    private JMenuItem customLineThicknessMenuItem = new JMenuItem("Custom Line Thickness");
+    private java.util.Map<Object, Runnable> actionMap = new HashMap<>();
+    @Getter
+    @Setter
+    private ShapeMode shapeMode = ShapeMode.Line;
 
-    public DrawingMenuBar(AppService appService){
+    public DrawingMenuBar(AppService appService) {
         super();
-        this.appService  = appService;
+        this.appService = appService;
+
+        initializeActionMap(); // for menu bar items.
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -103,10 +107,9 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         attributeMenu.add(colorMenu);
         colorMenu.add(foreColorMenuItem);
         colorMenu.add(fillColorMenuItem);
+        attributeMenu.add(fontMenuItem);
         foreColorMenuItem.addActionListener(this);
         fillColorMenuItem.addActionListener(this);
-
-        attributeMenu.add(fontMenuItem);
         fontMenuItem.addActionListener(this);
 
         attributeMenu.add(thicknessLineMenu);
@@ -114,10 +117,13 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         thicknessLineMenu.add(thinLineMenuItem);
         thicknessLineMenu.add(mediumLineMenuItem);
         thicknessLineMenu.add(thickLineMenuItem);
+        thicknessLineMenu.add(customLineThicknessMenuItem);
 
         thinLineMenuItem.addActionListener(this);
         mediumLineMenuItem.addActionListener(this);
         thickLineMenuItem.addActionListener(this);
+        customLineThicknessMenuItem.addActionListener(this);
+
         drawMenu.add(ellipseMenuItem);
         ellipseMenuItem.addActionListener(this);
 
@@ -130,60 +136,87 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         curveMenuItem.addActionListener(this);
         drawMenu.add(selectMenuItem);
         selectMenuItem.addActionListener(this);
+        drawMenu.add(imageMenuItem);
+        imageMenuItem.addActionListener(this);
+        drawMenu.add(textMenuItem);
+        textMenuItem.addActionListener(this);
     }
 
-    @Getter
-    @Setter
-    private ShapeMode shapeMode = ShapeMode.Line;
-
-    @Getter
-    @Setter
-    BasicStroke basicStroke = new BasicStroke(10);
+    private static JFileChooser summonFileChooser(String homeFolder) {
+        JFileChooser fileChooser = new JFileChooser(homeFolder);
+        FileTypeFilter pngTypeFilter = new FileTypeFilter("png", "PNG Image Documents");
+        FileTypeFilter jpgTypeFilter = new FileTypeFilter("jpg", "JPEG Image Documents");
+        FileTypeFilter gifTypeFilter = new FileTypeFilter("gif", "GIF Image Documents");
+        fileChooser.addChoosableFileFilter(pngTypeFilter);
+        fileChooser.addChoosableFileFilter(jpgTypeFilter);
+        fileChooser.addChoosableFileFilter(gifTypeFilter);
+        return fileChooser;
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == lineMenuItem){
-            appService.setShapeMode( ShapeMode.Line);
+        Runnable action = actionMap.get(e.getSource());
+        if (action != null) {
+            action.run();
         }
-        else if(e.getSource() == ellipseMenuItem){
-            appService.setShapeMode( ShapeMode.Ellipse);
-        }
-        else if(e.getSource() == rectangleMenuItem){
-            appService.setShapeMode( ShapeMode.Rectangle);
-        }
-        else if(e.getSource() == selectMenuItem){
-            appService.setShapeMode( ShapeMode.Select);
-        }
-        else if(e.getSource() == thinLineMenuItem){
-            appService.setLineThickness(1);
-        }
-        else if(e.getSource() == mediumLineMenuItem){
-            appService.setLineThickness(5);
-        }
-        else if(e.getSource() == thickLineMenuItem){
-            appService.setLineThickness(10);
-        }
-        else if(e.getSource() == foreColorMenuItem){
+    }
+
+    private void initializeActionMap() {
+        //shapes.
+        actionMap.put(lineMenuItem, () -> appService.setShapeMode(ShapeMode.Line));
+        actionMap.put(ellipseMenuItem, () -> appService.setShapeMode(ShapeMode.Ellipse));
+        actionMap.put(rectangleMenuItem, () -> appService.setShapeMode(ShapeMode.Rectangle));
+        actionMap.put(selectMenuItem, () -> appService.setShapeMode(ShapeMode.Select));
+        actionMap.put(imageMenuItem, () -> {
+            JFileChooser fileChooser = getChooser();
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String filename = fileChooser.getSelectedFile().getAbsolutePath();
+                appService.setImageFileName(filename);
+                appService.setShapeMode(ShapeMode.Image);
+            }
+        });
+        actionMap.put(textMenuItem, () -> {
+            String inputText = showTextInputDialog();
+            if (inputText != null && !inputText.trim().isEmpty()) {
+                appService.setTextContent(inputText);
+                appService.setShapeMode(ShapeMode.Text);
+            }
+        });
+        //thickness levels.
+        actionMap.put(thinLineMenuItem, () -> appService.setLineThickness(1));
+        actionMap.put(mediumLineMenuItem, () -> appService.setLineThickness(5));
+        actionMap.put(thickLineMenuItem, () -> appService.setLineThickness(10));
+        actionMap.put(customLineThicknessMenuItem, () -> {
+            try {
+                int customThickness = customThicknessDialog();
+                appService.setLineThickness(customThickness);
+            } catch (NumberFormatException e) {
+                System.out.println(e.toString());
+            }
+        });
+
+        //attributes
+        actionMap.put(foreColorMenuItem, () -> {
             Color color = JColorChooser.showDialog(null, "Choose a color", appService.getColor());
             appService.setColor(color);
-        }
-        else if(e.getSource() == fillColorMenuItem){
+        });
+        actionMap.put(fillColorMenuItem, () -> {
             Color color = JColorChooser.showDialog(null, "Choose a color", appService.getColor());
             appService.setFillColor(color);
-        }
-        else if(e.getSource() == fontMenuItem){
+        });
+        actionMap.put(fontMenuItem, () -> {
             FontDialog.showDialog(this);
             Font font = FontDialog.previewFont;
             appService.setTextFont(font);
-            System.out.println("Debug: font selected: " + appService.getTextFont().toString());
-        }
-        else if(e.getSource() == undoMenuItem){
-            appService.undo();
-        }
-        else if(e.getSource() == redoMenuItem){
-            CommandService.redo();
-        }
-        else if(e.getSource() == saveAsMenuItem){
+        });
+
+        //undo-redo
+        actionMap.put(undoMenuItem, () -> appService.undo());
+        actionMap.put(redoMenuItem, CommandService::redo);
+
+        //file menu
+        actionMap.put(saveAsMenuItem, () -> {
             String filename = appService.getFileName();
             JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             fileChooser.addChoosableFileFilter(new FileFilter() {
@@ -206,10 +239,10 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
                 appService.setFileName(filename);
             }
             appService.save();
-        }
-        else if(e.getSource() == saveMenuItem){
+        });
+        actionMap.put(saveMenuItem, () -> {
             String filename = appService.getFileName();
-            if(filename == null) {
+            if (filename == null) {
                 JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
                 fileChooser.addChoosableFileFilter(new FileFilter() {
                     public String getDescription() {
@@ -232,8 +265,8 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
                 }
             }
             appService.save();
-        }
-        else if(e.getSource() == openMenuItem) {
+        });
+        actionMap.put(openMenuItem, () -> {
             String filename = appService.getFileName();
             JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             FileTypeFilter xmlTypeFilter = new FileTypeFilter("xml", "Xml Documents");
@@ -247,10 +280,29 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
             }
             appService.open();
             appService.repaint();
-        }else if(e.getSource() == closeMenuItem){
-            appService.close();
-        }else if(e.getSource() ==exitMenuItem){
-            appService.exit();
-        }
+        });
+        actionMap.put(closeMenuItem, () -> appService.close());
+        actionMap.put(exitMenuItem, () -> appService.exit());
     }
+
+    private int customThicknessDialog() {
+        String num = JOptionPane.showInputDialog(this, "Enter your desired line thickness (number only):", "Text Input", JOptionPane.PLAIN_MESSAGE);
+        return Integer.parseInt(num);
+    }
+
+    private String showTextInputDialog() {
+        return JOptionPane.showInputDialog(this, "Enter text:", "Text Input", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private JFileChooser getChooser() {
+        String homeFolder;
+        if (appService.getImageFileName() == null) {
+            homeFolder = FileSystemView.getFileSystemView().getHomeDirectory().getPath();
+        } else {
+            File file = new File(appService.getImageFileName());
+            homeFolder = file.getPath();
+        }
+        return summonFileChooser(homeFolder);
+    }
+
 }

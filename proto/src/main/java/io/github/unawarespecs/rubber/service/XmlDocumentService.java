@@ -189,7 +189,7 @@ public class XmlDocumentService implements DocumentService {
                 // Initialize fill to a default value
                 Color fill = null;
                 attr = map.getNamedItem("fill");
-                if (attr != null) {
+                if (attr != null && !attr.getNodeValue().equals("null")) {
                     fill = convertColor(attr.getNodeValue());
                 }
 
@@ -206,7 +206,6 @@ public class XmlDocumentService implements DocumentService {
                 attr = map.getNamedItem("font");
                 if (attr != null) {
                     textFont = parseFont(attr.getNodeValue());
-                    System.out.println(attr.getNodeValue());
                 }
 
                 String textContent = null;
@@ -244,11 +243,9 @@ public class XmlDocumentService implements DocumentService {
     }
 
     public Color convertColor(String colorStr) {
-        Color fallbackColor = Color.WHITE; // You can choose any color you want
-
         // Check for null or "null" string
-        if (colorStr == null || colorStr.equals("null")) {
-            return fallbackColor;
+        if (colorStr == null || colorStr.equalsIgnoreCase("null")) {
+            return null;
         }
         // Check if the string starts with the expected prefix
         if (!colorStr.startsWith("java.awt.Color[")) {

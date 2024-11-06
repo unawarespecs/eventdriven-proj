@@ -45,7 +45,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         add(scrollPane, BorderLayout.CENTER);
 
         //Lay out the main panel.
-        setPreferredSize(new Dimension(200, 30));
+        setPreferredSize(new Dimension(200, 60));
         setBackground(Color.GREEN);
     }
 
@@ -135,18 +135,23 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         // Handle each button.
         if (RECT.equals(cmd)) { //first button clicked
             appService.setShapeMode(ShapeMode.Rectangle);
+            description = "set the shape mode \n to rectangle";
         } else if (LINE.equals(cmd)) { // second button clicked
             appService.setShapeMode(ShapeMode.Line);
+            description = "set the shape mode \n to line";
         } else if (ELLIPSE.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Ellipse);
+            description = "set the shape mode \n to ellipse";
         } else if (TEXT.equals(cmd)) { // third button clicked
             String inputText = showTextInputDialog();
             if (inputText != null && !inputText.trim().isEmpty()) {
                 appService.setTextContent(inputText);
             }
             appService.setShapeMode(ShapeMode.Text);
+            description = "enabled the text tool";
         } else if (CHAIN.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Chain);
+            description = "enabled the user to \n draw a series of lines";
         } else if (IMAGE.equals(cmd)) { // third button
             JFileChooser fileChooser = getChooser();
             int result = fileChooser.showOpenDialog(null);
@@ -154,9 +159,11 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 String filename = fileChooser.getSelectedFile().getAbsolutePath();
                 appService.setImageFileName(filename);
                 appService.setShapeMode(ShapeMode.Image);
+                description = "enabled the user to \n insert images";
             }
         } else if (SELECT.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Select);
+            description = "enabled the user to \n select shapes";
         } else if (SOMETHING_ELSE.equals(cmd)) { // fourth button clicked
             description = "done something else.";
         } else if (TEXT_ENTERED.equals(cmd)) { // text field
