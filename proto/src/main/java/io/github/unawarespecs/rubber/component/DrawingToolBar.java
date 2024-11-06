@@ -140,6 +140,10 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         } else if (ELLIPSE.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Ellipse);
         } else if (TEXT.equals(cmd)) { // third button clicked
+            String inputText = showTextInputDialog();
+            if (inputText != null && !inputText.trim().isEmpty()) {
+                appService.setTextContent(inputText);
+            }
             appService.setShapeMode(ShapeMode.Text);
         } else if (CHAIN.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Chain);
@@ -167,6 +171,10 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
 
         displayResult("If this were a real app, it would have "
                 + description);
+    }
+
+    private String showTextInputDialog() {
+        return JOptionPane.showInputDialog(this, "Enter text:", "Text Input", JOptionPane.PLAIN_MESSAGE);
     }
 
     private JFileChooser getChooser() {
@@ -356,10 +364,16 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
             }
 
         } else if (shapeType.equals("TEXT")) {
-//            String text = appService.getTextContent();
-            String text = "test";
+            String text = appService.getTextContent();
             Font font = appService.getTextFont();
             int font_size = appService.getTextFont().getSize();
+
+            if (text == null) {
+                text = showTextInputDialog();
+                if (text != null && !text.trim().isEmpty()) {
+                    appService.setTextContent(text);
+                }
+            }
 
             shape = new Text(
                     new Point(startX, startY),

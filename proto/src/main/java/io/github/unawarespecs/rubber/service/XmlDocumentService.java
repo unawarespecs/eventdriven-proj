@@ -95,6 +95,8 @@ public class XmlDocumentService implements DocumentService {
                 } else if (shape.getClass() == Text.class) {
                     attr = document.createAttribute("text_content");
                     attr.setValue(((Text) shape).getText());
+                    element.setAttributeNode(attr);
+
                     attr = document.createAttribute("font");
                     attr.setValue(String.valueOf(((Text) shape).getFont()));
                 } else {
@@ -170,6 +172,18 @@ public class XmlDocumentService implements DocumentService {
                 attr = map.getNamedItem("image_filename");
                 if (attr != null) {
                     imageFilename = attr.getNodeValue();
+                }
+
+                Font textFont = null;
+                attr = map.getNamedItem("font");
+                if (attr != null) {
+                    System.out.println(attr.getNodeValue());
+                }
+
+                String textContent = null;
+                attr = map.getNamedItem("text_content");
+                if (attr != null) {
+                    textContent = attr.getNodeValue();
                 }
 
                 attr = map.getNamedItem("type");

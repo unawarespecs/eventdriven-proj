@@ -102,7 +102,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
         lineThickness = appService.getLineThickness();
         color = appService.getColor();
         Color fill = appService.getFillColor();
-        String text = "test";
+        String text = appService.getTextContent();
         Font font = appService.getTextFont();
 
         if (shapeMode == ShapeMode.Line) {
