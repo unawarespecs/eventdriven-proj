@@ -77,7 +77,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         button = makeNavigationButton("chain", CHAIN, "Add a sequence of lines", "Chain");
         add(button);
 
-        button = makeNavigationButton("image", IMAGE, "Add an  image", "Image");
+        button = makeNavigationButton("image", IMAGE, "Add an image", "Image");
         add(button);
 
         button = makeNavigationButton("select", SELECT, "Switch to select", "Select");
@@ -150,7 +150,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
             appService.setShapeMode(ShapeMode.Text);
             description = "enabled the text tool";
         } else if (CHAIN.equals(cmd)) { // third button clicked
-            appService.setShapeMode(ShapeMode.Chain);
+            appService.setShapeMode(ShapeMode.Line);
             description = "enabled the user to \n draw a series of lines";
         } else if (IMAGE.equals(cmd)) { // third button
             JFileChooser fileChooser = getChooser();
@@ -290,7 +290,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                             shapeSetDialogBox(ShapeMode.Ellipse);
                             break;
                         case "CHAIN":
-                            appService.setShapeMode(ShapeMode.Chain);
+                            appService.setShapeMode(ShapeMode.Line);
                             shapeSetDialogBox(ShapeMode.Chain);
                             break;
                         case "IMAGE", "PICTURE":
@@ -416,11 +416,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
     }
 
     void coordinateStringPrint(ShapeMode shape_type, int x1, int y1, int x2, int y2) {
-        System.out.println(
-                shape_type + " drawn at: " +
-                        "start(" + x1 + "," + y1 + "), " +
-                        "end(" + x2 + "," + y2 + ")"
-        );
+        System.out.printf("%s drawn at: start(%s, %s) end(%s, %s)\n", shape_type.toString(), x1, y1, x2, y2);
     }
 
     private Color parseColor(String colorString) {
