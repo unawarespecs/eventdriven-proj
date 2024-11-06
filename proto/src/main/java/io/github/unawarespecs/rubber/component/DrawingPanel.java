@@ -103,7 +103,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
         color = appService.getColor();
         Color fill = appService.getFillColor();
         String text = "test";
-        java.awt.Font a = new Font("Arial", Font.PLAIN, 14);
+        Font font = appService.getTextFont();
 
         if (shapeMode == ShapeMode.Line) {
             shape = new Line(start, start, color, lineThickness);
@@ -114,7 +114,7 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
         } else if (shapeMode == ShapeMode.Image) {
             shape = new Picture(start, start, color, appService.getImageFileName(), lineThickness);
         } else if (shapeMode == ShapeMode.Text) {
-            shape = new Text(start, start, text, a, a.getSize(), color, lineThickness);
+            shape = new Text(start, start, text, font, font.getSize(), color, lineThickness);
         } else if (shapeMode == ShapeMode.Select) {
             result = searchService.search(start);
             if (result != null) {

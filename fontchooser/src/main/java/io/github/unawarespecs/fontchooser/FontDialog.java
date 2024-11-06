@@ -10,8 +10,8 @@ import java.util.ResourceBundle;
 
 public class FontDialog extends JDialog {
 
-    public static String previewText;
-    public static Font previewFont;
+    public static String previewText = "The quick brown fox jumps over the lazy dog";
+    public static Font previewFont = new Font("Arial", Font.PLAIN, 12);
     public static void showDialog(Component component) {
         FontDialog dialog = new FontDialog((Frame) null, "Select Font", true);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

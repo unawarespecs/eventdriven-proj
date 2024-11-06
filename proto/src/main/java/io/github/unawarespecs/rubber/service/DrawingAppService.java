@@ -19,15 +19,16 @@ import java.util.List;
 @Data
 public class DrawingAppService implements AppService {
 
+    DrawingStatusPanel drawingStatusPanel;
+    XmlDocumentService xmlDocumentService;
+    int w = 5;
     private DrawingState drawingState;
     private MainFrame mainFrame;
     private PropertySheet propertySheet;
     private JPanel drawingPanel;
     private DrawingMenuBar drawingMenuBar;
-    DrawingStatusPanel drawingStatusPanel;
-    XmlDocumentService xmlDocumentService;
-    int w = 5;
-    public DrawingAppService(DrawingState drawingState){
+
+    public DrawingAppService(DrawingState drawingState) {
         this.drawingState = drawingState;
     }
 
@@ -51,21 +52,21 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
-    public void setSelectedShape(Shape shape) {
-        Shape lastSelected = drawingState.getSelected();
-        if(lastSelected!=null){
-            lastSelected.setSelected(false);
-        }
-        drawingState.setSelected(shape);
-        if(shape != null) {
-            shape.setSelected(true);
-        }
-        propertySheet.populateTable(this);
+    public Shape getSelectedShape() {
+        return drawingState.getSelectedShape();
     }
 
     @Override
-    public Shape getSelectedShape() {
-       return drawingState.getSelectedShape();
+    public void setSelectedShape(Shape shape) {
+        Shape lastSelected = drawingState.getSelected();
+        if (lastSelected != null) {
+            lastSelected.setSelected(false);
+        }
+        drawingState.setSelected(shape);
+        if (shape != null) {
+            shape.setSelected(true);
+        }
+        propertySheet.populateTable(this);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
-    public void setShapeMode(ShapeMode  shapeMode ) {
+    public void setShapeMode(ShapeMode shapeMode) {
         drawingState.setShapeMode(shapeMode);
     }
 
@@ -82,24 +83,20 @@ public class DrawingAppService implements AppService {
     public Color getColor() {
         return drawingState.getColor();
     }
+
     @Override
-    public void setColor(Color color){
+    public void setColor(Color color) {
         drawingState.setColor(color);
     }
 
     @Override
-    public Color getFillColor(){
-        return  drawingState.getFillColor();
+    public Color getFillColor() {
+        return drawingState.getFillColor();
     }
 
     @Override
-    public void setFillColor(Color color){
+    public void setFillColor(Color color) {
         drawingState.setFillColor(color);
-    }
-
-    @Override
-    public void setLineThickness(int thickness){
-        drawingState.setLineThickness(thickness);
     }
 
     @Override
@@ -108,17 +105,22 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
-    public List<Shape> getShapes(){
+    public void setLineThickness(int thickness) {
+        drawingState.setLineThickness(thickness);
+    }
+
+    @Override
+    public List<Shape> getShapes() {
         return drawingState.getShapes();
     }
 
     @Override
-    public String getImageFileName(){
+    public String getImageFileName() {
         return drawingState.getImageFileName();
     }
 
     @Override
-    public void setImageFileName(String imaageFileName){
+    public void setImageFileName(String imaageFileName) {
         drawingState.setImageFileName(imaageFileName);
     }
 
@@ -129,7 +131,7 @@ public class DrawingAppService implements AppService {
 
     @Override
     public void setTextContent(String text) {
-
+        drawingState.setTextContent(text);
     }
 
     @Override
@@ -139,7 +141,7 @@ public class DrawingAppService implements AppService {
 
     @Override
     public void setTextFont(Font font) {
-
+        drawingState.setTextFont(font);
     }
 
     @Override
@@ -153,13 +155,13 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
-    public String getFileName(){
+    public String getFileName() {
 
         return drawingState.getFilename();
     }
 
     @Override
-    public void  setFileName(String filename){
+    public void setFileName(String filename) {
 
         drawingState.setFilename(filename);
         setTitle("Go Draw - " + filename);
@@ -176,11 +178,12 @@ public class DrawingAppService implements AppService {
         xmlDocumentService.save();
     }
 
-    public void close(){
+    public void close() {
         drawingState.getShapes().clear();
         drawingPanel.repaint();
     }
-    public void exit(){
+
+    public void exit() {
         System.exit(0);
     }
 

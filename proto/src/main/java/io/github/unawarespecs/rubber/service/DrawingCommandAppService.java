@@ -120,7 +120,8 @@ public class DrawingCommandAppService implements AppService {
 
     @Override
     public void setTextContent(String text) {
-        appService.setTextContent(text);
+        Command command = new SetTextContentCommand(appService, text);
+        CommandService.ExecuteCommand(command);
     }
 
     @Override
@@ -130,7 +131,8 @@ public class DrawingCommandAppService implements AppService {
 
     @Override
     public void setTextFont(Font font) {
-        appService.setTextFont(font);
+        Command command = new SetTextFontCommand(appService, font);
+        CommandService.ExecuteCommand(command);
     }
 
     @Override

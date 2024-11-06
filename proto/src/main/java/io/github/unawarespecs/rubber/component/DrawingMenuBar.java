@@ -4,6 +4,7 @@ import io.github.unawarespecs.appfx.enums.ShapeMode;
 import io.github.unawarespecs.appfx.service.AppService;
 import io.github.unawarespecs.commandfx.CommandService;
 
+import io.github.unawarespecs.fontchooser.FontDialog;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -45,6 +46,8 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem rectangleMenuItem = new JMenuItem("Rectangle");
     private JMenuItem curveMenuItem = new JMenuItem("Curve");
     private JMenuItem selectMenuItem = new JMenuItem("Select");
+
+    private JMenuItem fontMenuItem = new JMenuItem("Choose Font");
 
     public DrawingMenuBar(AppService appService){
         super();
@@ -102,6 +105,9 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         colorMenu.add(fillColorMenuItem);
         foreColorMenuItem.addActionListener(this);
         fillColorMenuItem.addActionListener(this);
+
+        attributeMenu.add(fontMenuItem);
+        fontMenuItem.addActionListener(this);
 
         attributeMenu.add(thicknessLineMenu);
 
@@ -164,6 +170,12 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         else if(e.getSource() == fillColorMenuItem){
             Color color = JColorChooser.showDialog(null, "Choose a color", appService.getColor());
             appService.setFillColor(color);
+        }
+        else if(e.getSource() == fontMenuItem){
+            FontDialog.showDialog(this);
+            Font font = FontDialog.previewFont;
+            appService.setTextFont(font);
+            System.out.println("Debug: font selected: " + appService.getTextFont().toString());
         }
         else if(e.getSource() == undoMenuItem){
             appService.undo();

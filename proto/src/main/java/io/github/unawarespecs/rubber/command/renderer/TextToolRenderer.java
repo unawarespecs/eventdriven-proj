@@ -25,13 +25,19 @@ public class TextToolRenderer extends BaseRenderer {
         int fontSize = ((Text) shape).getFontSize();
 
         Graphics2D g2 = (Graphics2D) g;
+
         g2.setFont(currentFont);
         g2.setFont(g.getFont().deriveFont((float) fontSize));
-        g2.setColor(color);
+
+        if (xor) {
+            g2.setXORMode(shape.getColor());
+        } else {
+            g2.setColor(color);
+        }
 
         g2.drawString(enteredText, start.x, start.y);
 
-        if(shape.isSelected()){
+        if(!xor && shape.isSelected()){
             showHandles(g, shape);
         }
     }
