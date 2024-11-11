@@ -11,11 +11,14 @@ public class Shape implements Cloneable {
     private Point location;
     private Point end;
     private Color color;
-    private Color fill = null;
+    private Color fill;
     private int lineThickness;
     private Renderer renderer;
     private boolean selected;
     private boolean visible;
+    private Color gradientColorOne = null;
+    private Color gradientColorTwo = null;
+
     public Shape(Point location, Point end, Color color, Color fill, int lineThickness) {
         this.location = location;
         this.end = end;
@@ -27,9 +30,7 @@ public class Shape implements Cloneable {
     @Override
     public Shape clone() {
         try {
-            Shape clone = (Shape) super.clone();
-            // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
+            return (Shape) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

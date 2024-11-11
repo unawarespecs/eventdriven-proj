@@ -1,5 +1,6 @@
 package io.github.unawarespecs.appfx.service;
 
+import io.github.unawarespecs.appfx.enums.EditMode;
 import io.github.unawarespecs.appfx.enums.ShapeMode;
 import io.github.unawarespecs.appfx.model.Shape;
 
@@ -18,6 +19,9 @@ public interface AppService {
 
     ShapeMode getShapeMode();
     void setShapeMode(ShapeMode shapeMode);
+
+    EditMode getEditMode();
+    void setEditMode(EditMode editMode);
 
     Color getColor();
     void setColor(Color color);
@@ -48,8 +52,9 @@ public interface AppService {
     void exit();
 
     void save();
-
     void repaint();
+
+    void exportImage();
 
     void setTitle(String title);
 

@@ -1,5 +1,6 @@
 package io.github.unawarespecs.rubber.service;
 
+import io.github.unawarespecs.appfx.enums.EditMode;
 import io.github.unawarespecs.appfx.enums.ShapeMode;
 import io.github.unawarespecs.appfx.service.AppService;
 import io.github.unawarespecs.commandfx.Command;
@@ -41,6 +42,19 @@ public class DrawingCommandAppService implements AppService {
 //        Command command = new SetShapeModeCommand(appService, shapeMode );
 //        CommandService.ExecuteCommand(command);
     }
+
+    @Override
+    public EditMode getEditMode() {
+        return appService.getEditMode();
+    }
+
+    @Override
+    public void setEditMode(EditMode editMode) {
+        appService.setEditMode(editMode);
+//        Command command = new SetShapeModeCommand(appService, shapeMode );
+//        CommandService.ExecuteCommand(command);
+    }
+
 
     @Override
     public Color getColor() {
@@ -180,6 +194,11 @@ public class DrawingCommandAppService implements AppService {
     @Override
     public void repaint() {
         appService.repaint();
+    }
+
+    @Override
+    public void exportImage() {
+        appService.exportImage();
     }
 
     @Override

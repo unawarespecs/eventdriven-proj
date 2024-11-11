@@ -5,26 +5,28 @@ import io.github.unawarespecs.appfx.model.SearchResult;
 import io.github.unawarespecs.appfx.model.Shape;
 import io.github.unawarespecs.appfx.enums.Vertex;
 import io.github.unawarespecs.appfx.service.AppService;
+
 import java.awt.*;
 import java.util.List;
 
 public class SearchServiceImpl implements SearchService {
 
-    private int s=5;
     AppService appService;
-    public SearchServiceImpl(AppService appService){
-        this.appService =appService;
+
+    public SearchServiceImpl(AppService appService) {
+        this.appService = appService;
     }
 
-    private SearchResult search(Shape shape, Point point)  {
+    private SearchResult search(Shape shape, Point point) {
         SearchResult searchResult = new SearchResult();
         int locx = shape.getLocation().x;
         int locy = shape.getLocation().y;
         int endx = shape.getEnd().x;
         int endy = shape.getEnd().y;
-        int midx = (locx + endx) /2;
-        int midy = (locy + endy) /2;
+        int midx = (locx + endx) / 2;
+        int midy = (locy + endy) / 2;
 
+        int s = 5;
         if (((point.x > (locx - s)) && (point.x < (endx + s)) && (point.y > (locy - s)) && (point.y < endy + s))) {
             //searchResult.setClone(shape.clone());
             searchResult.setShape(shape);
@@ -32,43 +34,35 @@ public class SearchServiceImpl implements SearchService {
 
             if (((point.x > (locx - s)) && (point.x < (locx + s)) && (point.y > (locy - s)) && (point.y < locy + s))) {
                 searchResult.setVertex(Vertex.UpperLeft);
-            }
-            else if (((point.x > (locx - s)) && (point.x < (locx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
+            } else if (((point.x > (locx - s)) && (point.x < (locx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
                 searchResult.setVertex(Vertex.LowerLeft);
-            }
-            else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
+            } else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
                 searchResult.setVertex(Vertex.LowerRight);
-            }
-            else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (locy - s)) && (point.y < locy + s))) {
+            } else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (locy - s)) && (point.y < locy + s))) {
                 searchResult.setVertex(Vertex.UpperRight);
-            }
-            else if (((point.x > (locx - s)) && (point.x < (locx + s)) && (point.y > (midy - s)) && (point.y < midy + s))) {
+            } else if (((point.x > (locx - s)) && (point.x < (locx + s)) && (point.y > (midy - s)) && (point.y < midy + s))) {
                 searchResult.setVertex(Vertex.LeftMiddle);
-            }
-            else if (((point.x > (midx - s)) && (point.x < (midx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
+            } else if (((point.x > (midx - s)) && (point.x < (midx + s)) && (point.y > (endy - s)) && (point.y < endy + s))) {
                 searchResult.setVertex(Vertex.LowerMiddle);
-            }
-            else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (midy - s)) && (point.y < midy + s))) {
+            } else if (((point.x > (endx - s)) && (point.x < (endx + s)) && (point.y > (midy - s)) && (point.y < midy + s))) {
                 searchResult.setVertex(Vertex.RightMiddle);
-            }
-            else if (((point.x > (midx - s)) && (point.x < (midx + s)) && (point.y > (locy - s)) && (point.y < locy + s))) {
+            } else if (((point.x > (midx - s)) && (point.x < (midx + s)) && (point.y > (locy - s)) && (point.y < locy + s))) {
                 searchResult.setVertex(Vertex.UpperMiddle);
-            }
-            else {
+            } else {
                 searchResult.setVertex(Vertex.Whole);
             }
             return searchResult;
-        }
-        else {
+        } else {
             return null;
         }
     }
+
     @Override
     public SearchResult search(Point point) {
-        List<Shape> shapes =appService.getShapes();
-        for(Shape shape : shapes ) {
+        List<Shape> shapes = appService.getShapes();
+        for (Shape shape : shapes) {
             SearchResult searchResult = search(shape, point);
-            if(searchResult!=null)
+            if (searchResult != null)
                 return searchResult;
         }
         return null;

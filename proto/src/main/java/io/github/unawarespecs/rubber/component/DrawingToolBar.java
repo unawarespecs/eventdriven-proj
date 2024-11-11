@@ -3,7 +3,7 @@ package io.github.unawarespecs.rubber.component;
 import io.github.unawarespecs.appfx.enums.ShapeMode;
 import io.github.unawarespecs.appfx.service.AppService;
 
-import io.github.unawarespecs.rubber.command.renderer.TextToolRenderer;
+import io.github.unawarespecs.appfx.enums.EditMode;
 import io.github.unawarespecs.rubber.model.Ellipse;
 import io.github.unawarespecs.rubber.model.Line;
 import io.github.unawarespecs.rubber.model.Picture;
@@ -270,7 +270,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     appService.setLineThickness(thickness);
                     System.out.println("line thickness set to " + thickness + " pixels");
                     break;
-                case "SHAPE":
+                case "SHAPE", "SHAPEMODE":
                     String called_shape = keyValue[1];
                     switch (called_shape) {
                         case "LINE":
@@ -302,6 +302,24 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                             throw new IllegalArgumentException("unknown shape: " + called_shape);
                     }
                     break;
+                case "DRAWMODE":
+                    String called_mode = keyValue[1];
+                    switch (called_mode) {
+                        case "CREATE":
+                            appService.setEditMode(EditMode.Create);
+                            break;
+                        case "UPDATE":
+                            appService.setEditMode(EditMode.Update);
+                            break;
+                        case "DELETE":
+                            appService.setEditMode(EditMode.Delete);
+                            break;
+                        case "VIEW":
+                            appService.setEditMode(EditMode.View);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("unknown edit mode");
+                    }
                 default:
                     errorDialogBox("Unknown attribute: " + key, "Error");
                     throw new IllegalArgumentException("Unknown attribute: " + key);

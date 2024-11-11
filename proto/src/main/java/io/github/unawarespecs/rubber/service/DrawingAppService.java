@@ -1,5 +1,6 @@
 package io.github.unawarespecs.rubber.service;
 
+import io.github.unawarespecs.appfx.enums.EditMode;
 import io.github.unawarespecs.appfx.service.AppService;
 import io.github.unawarespecs.commandfx.CommandService;
 import io.github.unawarespecs.rubber.component.*;
@@ -11,9 +12,14 @@ import io.github.unawarespecs.rubber.component.PropertySheet;
 import io.github.unawarespecs.rubber.model.DrawingState;
 import io.github.unawarespecs.appfx.model.Shape;
 import lombok.Data;
+import lombok.Getter;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @Data
@@ -25,7 +31,8 @@ public class DrawingAppService implements AppService {
     private DrawingState drawingState;
     private MainFrame mainFrame;
     private PropertySheet propertySheet;
-    private JPanel drawingPanel;
+    @Getter
+    private DrawingPanel drawingPanel;
     private DrawingMenuBar drawingMenuBar;
 
     public DrawingAppService(DrawingState drawingState) {
@@ -77,6 +84,16 @@ public class DrawingAppService implements AppService {
     @Override
     public void setShapeMode(ShapeMode shapeMode) {
         drawingState.setShapeMode(shapeMode);
+    }
+
+    @Override
+    public EditMode getEditMode() {
+        return drawingState.getEditMode();
+    }
+
+    @Override
+    public void setEditMode(EditMode editMode) {
+        drawingState.setEditMode(editMode);
     }
 
     @Override
@@ -191,6 +208,21 @@ public class DrawingAppService implements AppService {
     @Override
     public void repaint() {
         drawingPanel.repaint();
+    }
+
+    @Override
+    public void exportImage() {
+        BufferedImage savedImg = new BufferedImage(drawingPanel.getWidth(), drawingPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D cg = savedImg.createGraphics();
+        drawingPanel.paintAll(cg);
+        try {
+            if (ImageIO.write(savedImg, "png", new File("./output_image.png"))) {
+                System.out.println("-- saved");
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println(e.toString());
+        }
     }
 
     @Override

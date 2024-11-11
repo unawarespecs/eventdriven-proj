@@ -6,14 +6,8 @@ import io.github.unawarespecs.property.PropertyOptions;
 import io.github.unawarespecs.property.PropertyPanel;
 import io.github.unawarespecs.property.cell.SelectionCellComponent;
 import io.github.unawarespecs.property.property.*;
-import io.github.unawarespecs.property.property.*;
 import io.github.unawarespecs.property.property.selection.Item;
 import io.github.unawarespecs.property.property.selection.SelectionProperty;
-import io.github.unawarespecs.property.validator.CompoundValidator;
-import io.github.unawarespecs.property.validator.StringValidator;
-import io.github.unawarespecs.property.validator.doubleNumber.DoubleRangeValidator;
-import io.github.unawarespecs.property.validator.doubleNumber.DoubleValidator;
-import io.github.unawarespecs.property.validator.doubleNumber.DoubleZeroPolicyValidator;
 
 import io.github.unawarespecs.appfx.model.Shape;
 
@@ -31,8 +25,8 @@ public class PropertySheet extends PropertyPanel {
         PropertyPanel propertyTable = this;
         propertyTable.addEventListener(new EventListener(appService));
         Shape shape = appService.getSelectedShape();
+        propertyTable.clear();
         if (shape == null) {
-            propertyTable.clear();
             String objectType = "Application";
             StringProperty targetProp = new StringProperty("Object Type", objectType);
 
@@ -65,34 +59,20 @@ public class PropertySheet extends PropertyPanel {
             IntegerProperty lineThicknessProp = new IntegerProperty("Line Thickness", appService.getLineThickness());
             propertyTable.addProperty(lineThicknessProp);
 
-            BooleanProperty prop3 = new BooleanProperty("Boolean", true);
-            FloatProperty prop4 = new FloatProperty("Float", 1.2f);
-            StringProperty prop5 = new StringProperty("String", "Test string");
-            StringProperty prop6 = new StringProperty("String 2", "test", new StringValidator(
-                    new String[]{"test", "test 2", "foo"}
-            ));
-            DoubleProperty prop8 = new DoubleProperty("Double", 2.34,
-                    new CompoundValidator(
-                            new DoubleValidator(),
-                            new DoubleRangeValidator(-1.2, 45.33, true, false),
-                            new DoubleZeroPolicyValidator(false)
-                    )
-            );
             ActionProperty prop9 = new ActionProperty("Press me", () -> {
                 System.out.println("Pressed");
             });
             propertyTable.addProperty(prop9);
         } else {
-            propertyTable.clear();
             StringProperty targetProp = new StringProperty("Object Type", "Shape");
             propertyTable.addProperty(targetProp);
 
-            Item RectangleItem = new Item<ShapeMode>(ShapeMode.Rectangle, "Rectangle");
-            Item EllipseItem = new Item<ShapeMode>(ShapeMode.Ellipse, "Ellipse");
-            Item LineItem = new Item<ShapeMode>(ShapeMode.Line, "Line");
-            Item ImageItem = new Item<ShapeMode>(ShapeMode.Image, "Image");
-            Item TextItem = new Item<ShapeMode>(ShapeMode.Text, "Text");
-            SelectionProperty shapeProp = new SelectionProperty<>(
+            Item<ShapeMode> RectangleItem = new Item<>(ShapeMode.Rectangle, "Rectangle");
+            Item<ShapeMode> EllipseItem = new Item<>(ShapeMode.Ellipse, "Ellipse");
+            Item<ShapeMode> LineItem = new Item<>(ShapeMode.Line, "Line");
+            Item<ShapeMode> ImageItem = new Item<>(ShapeMode.Image, "Image");
+            Item<ShapeMode> TextItem = new Item<>(ShapeMode.Text, "Text");
+            SelectionProperty<ShapeMode> shapeProp = new SelectionProperty<>(
                     "Current Shape",
                     new ArrayList<>(Arrays.asList(
                             RectangleItem,
@@ -106,18 +86,13 @@ public class PropertySheet extends PropertyPanel {
 
             SelectionCellComponent selectionComponent = propertyTable.getSelectionCellComponent();
 
-
             String className = shape.getClass().getSimpleName();
-            if (className.equals("Rectangle")) {
-                selectionComponent.setCellEditorValue(RectangleItem);
-            } else if (className.equals("Ellipse")) {
-                selectionComponent.setCellEditorValue(EllipseItem);
-            } else if (className.equals("Line")) {
-                selectionComponent.setCellEditorValue(LineItem);
-            } else if (className.equals("Image")) {
-                selectionComponent.setCellEditorValue(ImageItem);
-            } else if (className.equals("Text")) {
-                selectionComponent.setCellEditorValue(TextItem);
+            switch (className) {
+                case "Rectangle" -> selectionComponent.setCellEditorValue(RectangleItem);
+                case "Ellipse" -> selectionComponent.setCellEditorValue(EllipseItem);
+                case "Line" -> selectionComponent.setCellEditorValue(LineItem);
+                case "Image" -> selectionComponent.setCellEditorValue(ImageItem);
+                case "Text" -> selectionComponent.setCellEditorValue(TextItem);
             }
 
             IntegerProperty xloc = new IntegerProperty("X Location ", shape.getLocation().x);
@@ -135,19 +110,6 @@ public class PropertySheet extends PropertyPanel {
             IntegerProperty lineThicknessProp = new IntegerProperty("Line Thickness", shape.getLineThickness());
             propertyTable.addProperty(lineThicknessProp);
 
-            BooleanProperty prop3 = new BooleanProperty("Boolean", true);
-            FloatProperty prop4 = new FloatProperty("Float", 1.2f);
-            StringProperty prop5 = new StringProperty("String", "Test string");
-            StringProperty prop6 = new StringProperty("String 2", "test", new StringValidator(
-                    new String[]{"test", "test 2", "foo"}
-            ));
-            DoubleProperty prop8 = new DoubleProperty("Double", 2.34,
-                    new CompoundValidator(
-                            new DoubleValidator(),
-                            new DoubleRangeValidator(-1.2, 45.33, true, false),
-                            new DoubleZeroPolicyValidator(false)
-                    )
-            );
             ActionProperty prop9 = new ActionProperty("Press me", () -> {
                 System.out.println("Pressed");
             });

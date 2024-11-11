@@ -34,8 +34,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import lombok.EqualsAndHashCode;
 import org.w3c.dom.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class DrawingPanel extends JPanel implements MouseListener, MouseMotionListener {
     Renderer lineRenderer;

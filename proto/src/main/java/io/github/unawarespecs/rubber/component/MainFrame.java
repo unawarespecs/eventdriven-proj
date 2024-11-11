@@ -34,10 +34,6 @@ public class MainFrame extends JFrame {
     private JScrollPane scrollPane;
 
 
-    private final int PREFERRED_WIDTH = 500;
-    private final int PREFERRED_HEIGHT = 600;
-
-
     public MainFrame() {
         Container pane = this.getContentPane();
         drawingState = new DrawingState();
@@ -57,7 +53,9 @@ public class MainFrame extends JFrame {
 
         jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        drawingPanel.setPreferredSize(new Dimension(4095, 8192));
+        int PREFERRED_HEIGHT = 900;
+        int PREFERRED_WIDTH = 1600;
+        drawingPanel.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
         drawingPanel.setDrawingStatusPanel(drawingStatusPanel);
         setLayout(new BorderLayout());
         setJMenuBar(drawingMenuBar);
@@ -88,7 +86,7 @@ public class MainFrame extends JFrame {
     }
 
     void buildPropertyTable(Container pane) {
-        String[] headers = new String[]{"Property", "value"};
+        String[] headers = new String[]{"Property", "Value"};
         Color backgroundColor = new Color(255, 255, 255);
         Color invalidColor = new Color(255, 179, 176);
         int rowHeight = 30;

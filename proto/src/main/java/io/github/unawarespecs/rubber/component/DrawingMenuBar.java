@@ -46,6 +46,7 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem selectMenuItem = new JMenuItem("Select");
     private JMenuItem fontMenuItem = new JMenuItem("Choose Font");
     private JMenuItem customLineThicknessMenuItem = new JMenuItem("Custom Line Thickness");
+    private JMenuItem exportAsImageItem = new JMenuItem("Export as Image");
     private java.util.Map<Object, Runnable> actionMap = new HashMap<>();
     @Getter
     @Setter
@@ -78,6 +79,7 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
         fileMenu.add(saveAsMenuItem);
         saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
+        fileMenu.add(exportAsImageItem);
         fileMenu.add(closeMenuItem);
         closeMenuItem.setMnemonic(KeyEvent.VK_C);
         fileMenu.add(exitMenuItem);
@@ -86,6 +88,7 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         openMenuItem.addActionListener(this);
         saveMenuItem.addActionListener(this);
         saveAsMenuItem.addActionListener(this);
+        exportAsImageItem.addActionListener(this);
         closeMenuItem.addActionListener(this);
         exitMenuItem.addActionListener(this);
 
@@ -283,6 +286,9 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         });
         actionMap.put(closeMenuItem, () -> appService.close());
         actionMap.put(exitMenuItem, () -> appService.exit());
+        actionMap.put(exportAsImageItem, () -> {
+            appService.exportImage();
+        });
     }
 
     private int customThicknessDialog() {
