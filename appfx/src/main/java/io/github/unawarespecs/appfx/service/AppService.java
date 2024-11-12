@@ -54,7 +54,7 @@ public interface AppService {
     void save();
     void repaint();
 
-    void exportImage();
+    void exportImage(String filename);
 
     void setTitle(String title);
 

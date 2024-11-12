@@ -39,14 +39,14 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         setFloatable(false);
         setRollover(true);
 
-        textArea = new JTextArea(5, 30);
+        textArea = new JTextArea(5, 40);
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
 
         //Lay out the main panel.
         setPreferredSize(new Dimension(200, 60));
-        setBackground(Color.GREEN);
+        setBackground(new Color(23,112,19));
     }
 
     private static JFileChooser summonFileChooser(String homeFolder) {
@@ -242,7 +242,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 addCmd(parts);
                 break;
             default:
-                errorDialogBox("Unknown command: " + commandString, "Error");
+                errorDialogBox("Unknown (or mistyped) command: " + commandString, "Error");
                 throw new IllegalArgumentException("unknown command: " + commandString);
         }
     }

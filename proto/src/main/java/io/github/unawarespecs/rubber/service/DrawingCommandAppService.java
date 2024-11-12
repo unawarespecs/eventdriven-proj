@@ -197,8 +197,8 @@ public class DrawingCommandAppService implements AppService {
     }
 
     @Override
-    public void exportImage() {
-        appService.exportImage();
+    public void exportImage(String filename) {
+        appService.exportImage(filename);
     }
 
     @Override

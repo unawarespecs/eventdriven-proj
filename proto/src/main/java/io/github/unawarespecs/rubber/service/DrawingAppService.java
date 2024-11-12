@@ -211,16 +211,15 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
-    public void exportImage() {
+    public void exportImage(String filename) {
         BufferedImage savedImg = new BufferedImage(drawingPanel.getWidth(), drawingPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D cg = savedImg.createGraphics();
         drawingPanel.paintAll(cg);
         try {
-            if (ImageIO.write(savedImg, "png", new File("./output_image.png"))) {
+            if (ImageIO.write(savedImg, "png", new File(filename))) {
                 System.out.println("-- saved");
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             System.out.println(e.toString());
         }
     }

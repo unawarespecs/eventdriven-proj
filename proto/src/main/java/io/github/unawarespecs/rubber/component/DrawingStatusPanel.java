@@ -16,7 +16,7 @@ public class DrawingStatusPanel extends JPanel {
     public DrawingStatusPanel(AppService appService){
         super.setBorder(new BevelBorder(BevelBorder.LOWERED));
         setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        JLabel statusLabel = new JLabel("status");
+        JLabel statusLabel = new JLabel("Cursor position ");
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         add(statusLabel);
         add(new JLabel("x: "));
@@ -33,7 +33,7 @@ public class DrawingStatusPanel extends JPanel {
         yText.setText("250");
 
         setPreferredSize(new Dimension( 1440,16));
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(Color.GRAY);
     }
     public void setPoint(Point point){
         xText.setText("x = " + String.valueOf(point.x));

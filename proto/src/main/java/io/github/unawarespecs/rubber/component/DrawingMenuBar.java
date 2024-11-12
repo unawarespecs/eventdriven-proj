@@ -26,8 +26,8 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
     private AppService appService;
     private JMenuItem openMenuItem = new JMenuItem("Open");
     private JMenuItem saveMenuItem = new JMenuItem("Save");
-    private JMenuItem saveAsMenuItem = new JMenuItem("Save as");
-    private JMenuItem closeMenuItem = new JMenuItem("Close");
+    private JMenuItem saveAsMenuItem = new JMenuItem("Save as...");
+    private JMenuItem closeMenuItem = new JMenuItem("Close File");
     private JMenuItem exitMenuItem = new JMenuItem("Exit");
     private JMenuItem undoMenuItem = new JMenuItem("Undo");
     private JMenuItem redoMenuItem = new JMenuItem("Redo");
@@ -46,7 +46,7 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
     private JMenuItem selectMenuItem = new JMenuItem("Select");
     private JMenuItem fontMenuItem = new JMenuItem("Choose Font");
     private JMenuItem customLineThicknessMenuItem = new JMenuItem("Custom Line Thickness");
-    private JMenuItem exportAsImageItem = new JMenuItem("Export as Image");
+    private JMenuItem exportAsImageItem = new JMenuItem("Export as PNG...");
     private java.util.Map<Object, Runnable> actionMap = new HashMap<>();
     @Getter
     @Setter
@@ -72,18 +72,32 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         JMenu thicknessLineMenu = new JMenu("Thickness");
         thicknessLineMenu.setMnemonic(KeyEvent.VK_T);
 
+        KeyStroke keyStrokeToSave = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke keyStrokeToExport = KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK);
+        KeyStroke keyStrokeToSaveAs = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK);
+        KeyStroke keyStrokeToUndo = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke keyStrokeToRedo = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke keyStrokeToOpen = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK);
+        KeyStroke keyStrokeToQuit = KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK);
+
         this.add(fileMenu);
         fileMenu.add(openMenuItem);
         openMenuItem.setMnemonic(KeyEvent.VK_O);
+        openMenuItem.setAccelerator(keyStrokeToOpen);
         fileMenu.add(saveMenuItem);
         saveMenuItem.setMnemonic(KeyEvent.VK_S);
+        saveMenuItem.setAccelerator(keyStrokeToSave);
         fileMenu.add(saveAsMenuItem);
         saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
+        saveAsMenuItem.setAccelerator(keyStrokeToSaveAs);
         fileMenu.add(exportAsImageItem);
+        exportAsImageItem.setMnemonic(KeyEvent.VK_E);
+        exportAsImageItem.setAccelerator(keyStrokeToExport);
         fileMenu.add(closeMenuItem);
         closeMenuItem.setMnemonic(KeyEvent.VK_C);
         fileMenu.add(exitMenuItem);
         exitMenuItem.setMnemonic(KeyEvent.VK_X);
+        exitMenuItem.setAccelerator(keyStrokeToQuit);
 
         openMenuItem.addActionListener(this);
         saveMenuItem.addActionListener(this);
@@ -93,10 +107,8 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         exitMenuItem.addActionListener(this);
 
         editMenu.add(undoMenuItem);
-        KeyStroke keyStrokeToUndo = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK);
         undoMenuItem.setAccelerator(keyStrokeToUndo);
         editMenu.add(redoMenuItem);
-        KeyStroke keyStrokeToRedo = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
         redoMenuItem.setAccelerator(keyStrokeToRedo);
 
         this.add(editMenu);
@@ -106,6 +118,9 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         this.add(viewMenu);
         this.add(drawMenu);
         this.add(attributeMenu);
+
+        viewMenu.add(selectMenuItem);
+        selectMenuItem.addActionListener(this);
 
         attributeMenu.add(colorMenu);
         colorMenu.add(foreColorMenuItem);
@@ -137,8 +152,6 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         rectangleMenuItem.addActionListener(this);
         drawMenu.add(curveMenuItem);
         curveMenuItem.addActionListener(this);
-        drawMenu.add(selectMenuItem);
-        selectMenuItem.addActionListener(this);
         drawMenu.add(imageMenuItem);
         imageMenuItem.addActionListener(this);
         drawMenu.add(textMenuItem);
@@ -221,7 +234,7 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         //file menu
         actionMap.put(saveAsMenuItem, () -> {
             String filename = appService.getFileName();
-            JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            JFileChooser fileChooser = openChooser();
             fileChooser.addChoosableFileFilter(new FileFilter() {
                 public String getDescription() {
                     return "Xml Documents (*.xml)";
@@ -240,14 +253,15 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
                 // set the label to the path of the selected file
                 filename = fileChooser.getSelectedFile().getAbsolutePath();
                 appService.setFileName(filename);
+                appService.save();
             }
-            appService.save();
+
         });
         actionMap.put(saveMenuItem, () -> {
             String filename = appService.getFileName();
             if (filename == null) {
-                JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-                fileChooser.addChoosableFileFilter(new FileFilter() {
+                JFileChooser c = openChooser();
+                c.addChoosableFileFilter(new FileFilter() {
                     public String getDescription() {
                         return "Xml Documents (*.xml)";
                     }
@@ -260,18 +274,19 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
                         }
                     }
                 });
-                int result = fileChooser.showSaveDialog(null);
+                int result = c.showSaveDialog(null);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     // set the label to the path of the selected file
-                    filename = fileChooser.getSelectedFile().getAbsolutePath();
+                    filename = c.getSelectedFile().getAbsolutePath();
                     appService.setFileName(filename);
+                    appService.save();
                 }
             }
-            appService.save();
+
         });
         actionMap.put(openMenuItem, () -> {
             String filename = appService.getFileName();
-            JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            JFileChooser fileChooser = openChooser();
             FileTypeFilter xmlTypeFilter = new FileTypeFilter("xml", "Xml Documents");
             fileChooser.addChoosableFileFilter(xmlTypeFilter);
             fileChooser.setFileFilter(xmlTypeFilter);
@@ -287,8 +302,34 @@ public class DrawingMenuBar extends JMenuBar implements ActionListener {
         actionMap.put(closeMenuItem, () -> appService.close());
         actionMap.put(exitMenuItem, () -> appService.exit());
         actionMap.put(exportAsImageItem, () -> {
-            appService.exportImage();
+            String filename;
+            FileTypeFilter pngTypeFilter = new FileTypeFilter("png", "PNG Image");
+            JFileChooser c = openChooser();
+            c.addChoosableFileFilter(new FileFilter() {
+                public String getDescription() {
+                    return "PNG Image (*.png)";
+                }
+
+                public boolean accept(File f) {
+                    if (f.isDirectory()) {
+                        return true;
+                    } else {
+                        return f.getName().toLowerCase().endsWith(".png");
+                    }
+                }
+            });
+            c.setFileFilter(pngTypeFilter);
+            int result = c.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                filename = c.getSelectedFile().getAbsolutePath();
+                appService.exportImage(filename);
+            }
+
         });
+    }
+
+    private JFileChooser openChooser() {
+        return new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
     }
 
     private int customThicknessDialog() {
