@@ -29,9 +29,9 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
     static final private String SELECT = "select";
     static final private String SOMETHING_ELSE = "other";
     static final private String TEXT_ENTERED = "text_entered";
+    private final AppService appService;
     protected JTextArea textArea;
     protected String newline = "\n";
-    private AppService appService;
 
     public DrawingToolBar(AppService appService) {
         this.appService = appService;
@@ -39,14 +39,14 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         setFloatable(false);
         setRollover(true);
 
-        textArea = new JTextArea(5, 40);
+        textArea = new JTextArea(5, 55);
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
 
         //Lay out the main panel.
         setPreferredSize(new Dimension(200, 60));
-        setBackground(new Color(23,112,19));
+        setBackground(new Color(23, 112, 19));
     }
 
     private static JFileChooser summonFileChooser(String homeFolder) {
@@ -61,7 +61,7 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
     }
 
     protected void addButtons() {
-        JButton button = null;
+        JButton button;
         button = makeNavigationButton("rect", RECT, "Draw a rectangle", "Rectangle");
         add(button);
 
@@ -135,23 +135,23 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
         // Handle each button.
         if (RECT.equals(cmd)) { //first button clicked
             appService.setShapeMode(ShapeMode.Rectangle);
-            description = "set the shape mode \n to rectangle";
+            displayResult("Rectangle shape selected");
         } else if (LINE.equals(cmd)) { // second button clicked
             appService.setShapeMode(ShapeMode.Line);
-            description = "set the shape mode \n to line";
+            displayResult("Line shape selected");
         } else if (ELLIPSE.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Ellipse);
-            description = "set the shape mode \n to ellipse";
+            displayResult("Ellipse shape selected");
         } else if (TEXT.equals(cmd)) { // third button clicked
             String inputText = showTextInputDialog();
             if (inputText != null && !inputText.trim().isEmpty()) {
                 appService.setTextContent(inputText);
             }
             appService.setShapeMode(ShapeMode.Text);
-            description = "enabled the text tool";
+            displayResult("Text tool selected");
         } else if (CHAIN.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Line);
-            description = "enabled the user to \n draw a series of lines";
+            displayResult("Chain tool selected");
         } else if (IMAGE.equals(cmd)) { // third button
             JFileChooser fileChooser = getChooser();
             int result = fileChooser.showOpenDialog(null);
@@ -159,29 +159,29 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 String filename = fileChooser.getSelectedFile().getAbsolutePath();
                 appService.setImageFileName(filename);
                 appService.setShapeMode(ShapeMode.Image);
-                description = "enabled the user to \n insert images";
+                displayResult("Image tool selected");
             }
         } else if (SELECT.equals(cmd)) { // third button clicked
             appService.setShapeMode(ShapeMode.Select);
-            description = "enabled the user to \n select shapes";
+            displayResult("Shape selector enabled");
         } else if (SOMETHING_ELSE.equals(cmd)) { // fourth button clicked
-            description = "done something else.";
+            displayResult("If this were a real app, it would have done something else.");
         } else if (TEXT_ENTERED.equals(cmd)) { // text field
             JTextField tf = (JTextField) e.getSource();
             String text = tf.getText();
             parseCommand(text);
             tf.setText("");
-            description = "done something with this text: "
-                    + newline + "  \""
-                    + text + "\"";
+//            description = "done something with this text: "
+//                    + newline + "  \""
+//                    + text + "\"";
         }
 
-        displayResult("If this were a real app, it would have "
-                + description);
+        //displayResult("If this were a real app, it would have "
+        //        + description);
     }
 
     private String showTextInputDialog() {
-        return JOptionPane.showInputDialog(this, "Enter text:", "Text Input", JOptionPane.PLAIN_MESSAGE);
+        return JOptionPane.showInputDialog(null, "Enter text:", "Text Input", JOptionPane.PLAIN_MESSAGE);
     }
 
     private JFileChooser getChooser() {
@@ -234,11 +234,11 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
 
         switch (action) {
             case "SET":
-                System.out.println("Set cmd detected");
+                System.out.println("[Debug] Set cmd detected");
                 setCmd(parts);
                 break;
             case "ADD":
-                System.out.println("Add shape detected");
+                System.out.println("[Debug] Add shape detected");
                 addCmd(parts);
                 break;
             default:
@@ -257,45 +257,65 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     String color_str = keyValue[1];
                     Color newColor = parseColor(color_str);
                     appService.setColor(newColor);
-                    System.out.println("color set to: " + newColor);
+                    displayResult("Foreground color set to: " + newColor);
                     break;
-                case "FILLCOLOR", "FILL":
+                case "FILL", "FILLCOLOR":
                     String rgb_fill = keyValue[1];
                     Color fillColor = parseColor(rgb_fill);
                     appService.setFillColor(fillColor);
-                    System.out.println("fill color set to: " + fillColor);
+                    displayResult("Fill color set to: " + fillColor);
+                    break;
+                case "FILLGRADONE", "FILLGRADIENTONE":
+                    String rgb_fill_gradient_one = keyValue[1];
+                    Color gFillOne = parseColor(rgb_fill_gradient_one);
+                    appService.setFillColorGradientOne(gFillOne);
+                    displayResult("Fill color gradient 1 set to: " + gFillOne);
+                    break;
+                case "FILLGRADTWO", "FILLGRADIENTTWO":
+                    String rgb_fill_gradient_two = keyValue[1];
+                    Color gFillTwo = parseColor(rgb_fill_gradient_two);
+                    appService.setFillColorGradientTwo(gFillTwo);
+                    displayResult("Fill color gradient 2 set to: " + gFillTwo);
+                    break;
+                case "FILLGRADCLEAR":
+                    String clear_cmd = keyValue[1];
+                    if (clear_cmd.equals("YES")) {
+                        appService.setFillColorGradientOne(null);
+                        appService.setFillColorGradientTwo(null);
+                        displayResult("Gradient colors cleared");
+                    } else displayResult("Gradient colors not cleared");
                     break;
                 case "THICKNESS", "THICK", "LINE_THICKNESS":
                     int thickness = Integer.parseInt(keyValue[1]);
                     appService.setLineThickness(thickness);
-                    System.out.println("line thickness set to " + thickness + " pixels");
+                    displayResult("Line thickness set to " + thickness + " pixels");
                     break;
                 case "SHAPE", "SHAPEMODE":
                     String called_shape = keyValue[1];
                     switch (called_shape) {
                         case "LINE":
                             appService.setShapeMode(ShapeMode.Line);
-                            shapeSetDialogBox(ShapeMode.Line);
+                            displayResult("Current shape mode set to " + ShapeMode.Line);
                             break;
                         case "RECTANGLE", "RECT":
                             appService.setShapeMode(ShapeMode.Rectangle);
-                            shapeSetDialogBox(ShapeMode.Rectangle);
+                            displayResult("Current shape mode set to " + ShapeMode.Rectangle);
                             break;
                         case "TEXT":
                             appService.setShapeMode(ShapeMode.Text);
-                            shapeSetDialogBox(ShapeMode.Text);
+                            displayResult("Current shape mode set to " + ShapeMode.Text);
                             break;
                         case "ELLIPSE", "CIRCLE":
                             appService.setShapeMode(ShapeMode.Ellipse);
-                            shapeSetDialogBox(ShapeMode.Ellipse);
+                            displayResult("Current shape mode set to " + ShapeMode.Ellipse);
                             break;
                         case "CHAIN":
                             appService.setShapeMode(ShapeMode.Line);
-                            shapeSetDialogBox(ShapeMode.Chain);
+                            displayResult("Current shape mode set to " + ShapeMode.Chain);
                             break;
                         case "IMAGE", "PICTURE":
                             appService.setShapeMode(ShapeMode.Image);
-                            shapeSetDialogBox(ShapeMode.Image);
+                            displayResult("Current shape mode set to " + ShapeMode.Image);
                             break;
                         default:
                             errorDialogBox("Unknown shape: " + called_shape, "Shape Not Present");
@@ -307,15 +327,19 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     switch (called_mode) {
                         case "CREATE":
                             appService.setEditMode(EditMode.Create);
+                            displayResult("Current edit mode set to " + EditMode.Create);
                             break;
                         case "UPDATE":
                             appService.setEditMode(EditMode.Update);
+                            displayResult("Current edit mode set to " + EditMode.Update);
                             break;
                         case "DELETE":
                             appService.setEditMode(EditMode.Delete);
+                            displayResult("Current edit mode set to " + EditMode.Delete);
                             break;
                         case "VIEW":
                             appService.setEditMode(EditMode.View);
+                            displayResult("Current edit mode set to " + EditMode.View);
                             break;
                         default:
                             throw new IllegalArgumentException("unknown edit mode");
@@ -355,6 +379,8 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     new Point(endX, endY),
                     appService.getColor(),
                     appService.getFillColor(),
+                    appService.getFillColorGradientOne(),
+                    appService.getFillColorGradientTwo(),
                     appService.getLineThickness()
             );
             appService.addShape(shape);
@@ -366,6 +392,8 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                     new Point(endX, endY),
                     appService.getColor(),
                     appService.getFillColor(),
+                    appService.getFillColorGradientOne(),
+                    appService.getFillColorGradientTwo(),
                     appService.getLineThickness()
             );
 
@@ -426,15 +454,9 @@ public class DrawingToolBar extends JToolBar implements ActionListener {
                 JOptionPane.ERROR_MESSAGE);
     }
 
-    void shapeSetDialogBox(ShapeMode shape_type) {
-        JOptionPane.showMessageDialog(null,
-                "Shape set to " + shape_type,
-                "Shape set",
-                JOptionPane.INFORMATION_MESSAGE);
-    }
-
     void coordinateStringPrint(ShapeMode shape_type, int x1, int y1, int x2, int y2) {
-        System.out.printf("%s drawn at: start(%s, %s) end(%s, %s)\n", shape_type.toString(), x1, y1, x2, y2);
+        System.out.printf("[Debug] %s drawn at: start(%s, %s) end(%s, %s)\n", shape_type.toString(), x1, y1, x2, y2);
+        displayResult(shape_type + " drawn at: start(" + x1 + "," + y1 + ") end(" + x2 + "," + y2 + ")");
     }
 
     private Color parseColor(String colorString) {

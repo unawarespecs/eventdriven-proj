@@ -82,6 +82,26 @@ public class DrawingCommandAppService implements AppService {
     }
 
     @Override
+    public Color getFillColorGradientOne() {
+        return appService.getFillColorGradientOne();
+    }
+
+    @Override
+    public void setFillColorGradientOne(Color color) {
+        appService.setFillColorGradientOne(color);
+    }
+
+    @Override
+    public Color getFillColorGradientTwo() {
+        return appService.getFillColorGradientTwo();
+    }
+
+    @Override
+    public void setFillColorGradientTwo(Color color) {
+        appService.setFillColorGradientTwo(color);
+    }
+
+    @Override
     public int getLineThickness() {
         return appService.getLineThickness();
     }
@@ -231,10 +251,12 @@ public class DrawingCommandAppService implements AppService {
     @Override
     public void undo() {
         appService.undo();
+        appService.repaint();
     }
 
     @Override
     public void redo() {
         appService.redo();
+        appService.repaint();
     }
 }

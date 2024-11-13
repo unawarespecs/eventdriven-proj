@@ -11,7 +11,9 @@ import java.util.List;
 
 @Data
 public class DrawingState {
-    private io.github.unawarespecs.appfx.model.Shape selected = null;
+    List<Shape> shapes;
+    Shape selectedShape;
+    private Shape selected = null;
     private ShapeMode shapeMode;
     private EditMode editMode;
     private Color color;
@@ -22,11 +24,13 @@ public class DrawingState {
     private String imageFileName;
     private String textContent;
     private Font textFont;
-    List<Shape> shapes;
-    Shape selectedShape;
-    public DrawingState(){
+    private Color gradientColorOne;
+    private Color gradientColorTwo;
+
+    public DrawingState() {
         this.shapeMode = ShapeMode.Line;
         this.editMode = EditMode.Create;
+        this.backColor = Color.WHITE;
         this.color = Color.GREEN;
         this.lineThickness = 1;
         this.textFont = new Font("Arial", Font.PLAIN, 12);

@@ -33,16 +33,30 @@ public class EllipseRenderer extends BaseRenderer {
             height = start.y - end.y;
         }
         Graphics2D g2 = (Graphics2D) g;
+        Color gradient_first = shape.getGradientColorOne();
+        Color gradient_second = shape.getGradientColorTwo();
+
         g2.setStroke(new BasicStroke(shape.getLineThickness()));
         if (xor) {
             g2.setXORMode(shape.getColor());
             g2.drawOval(x, y, width, height);
         } else {
             g2.setColor(shape.getColor());
-            if (shape.getFill() != null) {
-                g2.setColor(shape.getFill());
-                //g2.setColor(new Color(255,255,0,128));
-                g2.fillOval(x, y, width, height);
+            if (gradient_first != null && gradient_second != null) {
+                // Create a GradientPaint
+                GradientPaint gradientPaint = new GradientPaint(
+                        x, y, gradient_first, // Start point and color
+                        x + width, y + height, // End point and color
+                        gradient_second
+                );
+                g2.setPaint(gradientPaint);
+                g2.fillOval(x, y, width, height); // Fill with gradient
+            } else {
+                // Fallback to solid fill
+                if (shape.getFill() != null) {
+                    g2.setColor(shape.getFill());
+                    g2.fillOval(x, y, width, height);
+                }
             }
             g2.setColor(shape.getColor());
             g2.drawOval(x, y, width, height);

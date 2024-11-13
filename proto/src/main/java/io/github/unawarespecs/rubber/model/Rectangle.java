@@ -9,8 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Rectangle  extends Shape {
-    public Rectangle(Point start, Point end, Color color, Color fill,  int lineThickness){
-        super(start, end, color, fill, lineThickness);
+    public Rectangle(Point start, Point end, Color color, Color fill, Color gFillOne, Color gFillTwo, int lineThickness){
+        super(start, end, color, fill, gFillOne, gFillTwo, lineThickness);
+
         setRenderer(new RectangleRenderer());
     }
 }

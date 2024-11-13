@@ -16,7 +16,7 @@ public class Text extends Shape {
     private int fontSize;
 
     public Text(Point start, Point end, String text, Font font, int fontSize, Color color, int lineThickness) {
-        super(start, end, color, null, lineThickness);
+        super(start, end, color, null, null, null, lineThickness);
         this.text = text;
         this.font = font;
         this.fallbackFont = new Font("Arial", Font.PLAIN, 12);

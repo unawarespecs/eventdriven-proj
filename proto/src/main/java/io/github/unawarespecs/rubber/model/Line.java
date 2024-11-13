@@ -10,7 +10,7 @@ import java.awt.*;
 @Setter
 public class Line extends Shape {
     public Line(Point start, Point end, Color color, int lineThickness){
-        super(start, end, color, null, lineThickness);
+        super(start, end, color, null, null, null, lineThickness);
         setRenderer(new LineRenderer());
     }
 }

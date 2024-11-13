@@ -11,7 +11,7 @@ import javax.swing.*;
 
 public class Splash extends JPanel implements MouseListener {
     private BufferedImage image;
-    private GPanel gPanel;
+    private final GPanel gPanel;
     int width;
     int height;
     public Splash() {
@@ -55,7 +55,7 @@ public class Splash extends JPanel implements MouseListener {
             mf.setExtendedState(mf.getExtendedState() | JFrame.MAXIMIZED_BOTH);
             mf.setVisible(true);
 
-            topFrame.setVisible(false);;
+            topFrame.setVisible(false);
             this.dispatchEvent(new WindowEvent(topFrame, WindowEvent.WINDOW_CLOSING));
         }
     }

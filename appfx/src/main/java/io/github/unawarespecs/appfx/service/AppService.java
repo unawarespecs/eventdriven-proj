@@ -29,6 +29,12 @@ public interface AppService {
     Color getFillColor();
     void setFillColor(Color color);
 
+    Color getFillColorGradientOne();
+    void setFillColorGradientOne(Color color);
+
+    Color getFillColorGradientTwo();
+    void setFillColorGradientTwo(Color color);
+
     int getLineThickness();
     void setLineThickness(int thickness);
 

@@ -17,24 +17,28 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
 
-
-    private DrawingPanel drawingPanel;
-
-    private DrawingMenuBar drawingMenuBar;
-
-    private DrawingToolBar drawingToolBar;
-
-    private DrawingStatusPanel drawingStatusPanel;
-
     DrawingState drawingState;
-
     AppService appService;
-
+    private DrawingPanel drawingPanel;
+    private DrawingMenuBar drawingMenuBar;
+    private DrawingToolBar drawingToolBar;
+    private DrawingStatusPanel drawingStatusPanel;
     private PropertySheet propertySheet;
     private JScrollPane scrollPane;
 
-
     public MainFrame() {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(this.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
         Container pane = this.getContentPane();
         drawingState = new DrawingState();
         DrawingAppService drawAppService = new DrawingAppService(drawingState);
@@ -61,7 +65,7 @@ public class MainFrame extends JFrame {
         setJMenuBar(drawingMenuBar);
         buildGUI(pane);
 
-        XmlDocumentService xmlDocumentService =  new XmlDocumentService(drawingState);
+        XmlDocumentService xmlDocumentService = new XmlDocumentService(drawingState);
 
         drawAppService.setPropertySheet(propertySheet);
         drawAppService.setDrawingStatusPanel(drawingStatusPanel);
@@ -74,7 +78,9 @@ public class MainFrame extends JFrame {
         pane.add(drawingStatusPanel, BorderLayout.PAGE_END);
 
         getContentPane().add(jScrollPane, BorderLayout.CENTER);
-        this.setTitle("Go Draw (New)");
+        this.setTitle("Go Draw - New");
+
+
 
     }
 
@@ -102,68 +108,56 @@ public class MainFrame extends JFrame {
     class EventListener extends PropertyEventAdapter {
         @Override
         public void onPropertyUpdated(Property property) {
-            Shape shape  = drawingState.getSelected();
-            if(property.getName().equals("Current Shape")){
-                if(shape ==null) {
+            Shape shape = drawingState.getSelected();
+            if (property.getName().equals("Current Shape")) {
+                if (shape == null) {
                     drawingState.setShapeMode((ShapeMode) property.getValue());
                 }
             }
-            if(property.getName().equals("Fore color")){
-                if(shape ==null) {
+            if (property.getName().equals("Fore color")) {
+                if (shape == null) {
                     drawingState.setColor((Color) property.getValue());
                 } else {
                     shape.setColor((Color) property.getValue());
                 }
             }
-            if(property.getName().equals("Fill color")){
-                if(shape ==null) {
-                drawingState.setFillColor((Color)property.getValue());
+            if (property.getName().equals("Fill color")) {
+                if (shape == null) {
+                    drawingState.setFillColor((Color) property.getValue());
                 } else {
                     shape.setFill((Color) property.getValue());
                 }
             }
-            if(property.getName().equals("Line Thickness")){
-                if(shape ==null) {
-                    drawingState.setLineThickness((int)property.getValue());
+            if (property.getName().equals("Line Thickness")) {
+                if (shape == null) {
+                    drawingState.setLineThickness((int) property.getValue());
                 } else {
                     shape.setLineThickness((int) property.getValue());
                 }
             }
-            if(property.getName().equals("X Location")){
-                if(shape ==null) {
-                    ;
-                } else {
-                    Point p = shape.getLocation();
-                    p.x = (int) property.getValue();
-                    shape.setLocation(p);
-                }
+            if (property.getName().equals("X Location")) {
+                assert shape != null;
+                Point p = shape.getLocation();
+                p.x = (int) property.getValue();
+                shape.setLocation(p);
             }
-            if(property.getName().equals("Y Location")){
-                if(shape ==null) {
-                    ;
-                } else {
-                    Point p = shape.getLocation();
-                    p.y = (int) property.getValue();
-                    shape.setLocation(p);
-                }
+            if (property.getName().equals("Y Location")) {
+                assert shape != null;
+                Point p = shape.getLocation();
+                p.y = (int) property.getValue();
+                shape.setLocation(p);
             }
-            if(property.getName().equals("X End")){
-                if(shape ==null) {
-                    ;
-                } else {
-                    Point p = shape.getEnd();
-                    p.x = (int) property.getValue();
-                    shape.setEnd(p);
-                }
+            if (property.getName().equals("X End")) {
+                assert shape != null;
+                Point p = shape.getEnd();
+                p.x = (int) property.getValue();
+                shape.setEnd(p);
             }
-            if(property.getName().equals("Y End")){
-                if(shape ==null) {
-                    ;
-                } else {
-                    Point p = shape.getEnd();
-                    p.y = (int) property.getValue();
-                    shape.setEnd(p);
-                }
+            if (property.getName().equals("Y End")) {
+                assert shape != null;
+                Point p = shape.getEnd();
+                p.y = (int) property.getValue();
+                shape.setEnd(p);
             }
 
             drawingPanel.repaint();

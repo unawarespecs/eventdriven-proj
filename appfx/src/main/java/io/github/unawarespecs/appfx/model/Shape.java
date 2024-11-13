@@ -16,15 +16,17 @@ public class Shape implements Cloneable {
     private Renderer renderer;
     private boolean selected;
     private boolean visible;
-    private Color gradientColorOne = null;
-    private Color gradientColorTwo = null;
+    private Color gradientColorOne;
+    private Color gradientColorTwo;
 
-    public Shape(Point location, Point end, Color color, Color fill, int lineThickness) {
+    public Shape(Point location, Point end, Color color, Color fill, Color gFillOne, Color gFillTwo, int lineThickness) {
         this.location = location;
         this.end = end;
         this.color = color;
         this.fill = fill;
         this.lineThickness = lineThickness;
+        this.gradientColorOne = gFillOne;
+        this.gradientColorTwo = gFillTwo;
     }
 
     @Override

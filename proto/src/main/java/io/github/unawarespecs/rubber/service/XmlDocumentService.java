@@ -111,6 +111,14 @@ public class XmlDocumentService implements DocumentService {
                 } else {
                     attr = document.createAttribute("fill");
                     attr.setValue(String.valueOf(shape.getFill()));
+                    element.setAttributeNode(attr);
+
+                    attr = document.createAttribute("gradient_fill_color_one");
+                    attr.setValue(String.valueOf(shape.getGradientColorOne()));
+                    element.setAttributeNode(attr);
+
+                    attr = document.createAttribute("gradient_fill_color_two");
+                    attr.setValue(String.valueOf(shape.getGradientColorTwo()));
                 }
                 element.setAttributeNode(attr);
 
@@ -193,6 +201,18 @@ public class XmlDocumentService implements DocumentService {
                     fill = convertColor(attr.getNodeValue());
                 }
 
+                Color gFillOne = null;
+                attr = map.getNamedItem("gradient_fill_color_one");
+                if (attr != null && !attr.getNodeValue().equals("null")) {
+                    gFillOne = convertColor(attr.getNodeValue());
+                }
+
+                Color gFillTwo = null;
+                attr = map.getNamedItem("gradient_fill_color_two");
+                if (attr != null && !attr.getNodeValue().equals("null")) {
+                    gFillTwo = convertColor(attr.getNodeValue());
+                }
+
                 attr = map.getNamedItem("thickness");
                 int thickness = Integer.parseInt(attr.getNodeValue());
 
@@ -216,8 +236,8 @@ public class XmlDocumentService implements DocumentService {
 
                 attr = map.getNamedItem("type");
                 switch (attr.getNodeValue()) {
-                    case "Rectangle" -> shape = new Rectangle(start, end, color, fill, thickness);
-                    case "Ellipse" -> shape = new Ellipse(start, end, color, fill, thickness);
+                    case "Rectangle" -> shape = new Rectangle(start, end, color, fill, gFillOne, gFillTwo, thickness);
+                    case "Ellipse" -> shape = new Ellipse(start, end, color, fill, gFillOne, gFillTwo, thickness);
                     case "Line" -> shape = new Line(start, end, color, thickness);
                     case "Picture" -> {
                         if (imageFilename != null) {

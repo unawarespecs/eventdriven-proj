@@ -117,6 +117,26 @@ public class DrawingAppService implements AppService {
     }
 
     @Override
+    public Color getFillColorGradientOne() {
+        return drawingState.getGradientColorOne();
+    }
+
+    @Override
+    public void setFillColorGradientOne(Color color) {
+        drawingState.setGradientColorOne(color);
+    }
+
+    @Override
+    public Color getFillColorGradientTwo() {
+        return drawingState.getGradientColorTwo();
+    }
+
+    @Override
+    public void setFillColorGradientTwo(Color color) {
+        drawingState.setGradientColorTwo(color);
+    }
+
+    @Override
     public int getLineThickness() {
         return drawingState.getLineThickness();
     }
@@ -186,7 +206,6 @@ public class DrawingAppService implements AppService {
 
     @Override
     public void open() {
-
         xmlDocumentService.open(drawingState.getFilename());
     }
 
@@ -198,10 +217,11 @@ public class DrawingAppService implements AppService {
     public void close() {
         drawingState.getShapes().clear();
         drawingPanel.repaint();
-        mainFrame.setTitle("Go Draw (New)");
+        mainFrame.setTitle("Go Draw - New");
     }
 
     public void exit() {
+        drawingState.getShapes().clear();
         System.exit(0);
     }
 
@@ -212,15 +232,24 @@ public class DrawingAppService implements AppService {
 
     @Override
     public void exportImage(String filename) {
-        BufferedImage savedImg = new BufferedImage(drawingPanel.getWidth(), drawingPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+        int width = drawingPanel.getWidth();
+        int height = drawingPanel.getHeight();
+
+        BufferedImage savedImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D cg = savedImg.createGraphics();
-        drawingPanel.paintAll(cg);
+        cg.setColor(drawingState.getBackColor());
+        cg.fillRect(0, 0, width, height);
+        //drawingPanel.paintAll(cg);
+        // Render the shapes onto the BufferedImage
+        for (Shape shape : getShapes()) { // Assuming getShapes() returns the list of shapes
+            shape.getRenderer().render(cg, shape); // Render each shape
+        }
+        cg.dispose();
         try {
-            if (ImageIO.write(savedImg, "png", new File(filename))) {
-                System.out.println("-- saved");
-            }
+            ImageIO.write(savedImg, "png", new File(filename));
+            System.out.println("Image exported successfully to " + filename);
         } catch (IOException e) {
-            System.out.println(e.toString());
+            System.err.println("Error exporting image: " + e.getMessage());
         }
     }
 
@@ -258,6 +287,7 @@ public class DrawingAppService implements AppService {
     @Override
     public void redo() {
         CommandService.redo();
+        drawingPanel.repaint();
     }
 }
 

@@ -98,21 +98,23 @@ public class DrawingPanel extends JPanel implements MouseListener, MouseMotionLi
     @Override
     public void mousePressed(MouseEvent e) {
         start = e.getPoint();
-        System.out.println("mousePressed start.x = " + String.valueOf(start.x) + " start.y = " + String.valueOf(start.y));
+        System.out.println("[Debug] mousePressed start.x = " + String.valueOf(start.x) + " start.y = " + String.valueOf(start.y));
         end = start;
         shapeMode = appService.getShapeMode();
         lineThickness = appService.getLineThickness();
         color = appService.getColor();
         Color fill = appService.getFillColor();
+        Color gFillOne = appService.getFillColorGradientOne();
+        Color gFillTwo = appService.getFillColorGradientTwo();
         String text = appService.getTextContent();
         Font font = appService.getTextFont();
 
         if (shapeMode == ShapeMode.Line) {
             shape = new Line(start, start, color, lineThickness);
         } else if (shapeMode == ShapeMode.Rectangle) {
-            shape = new Rectangle(start, start, color, fill, lineThickness);
+            shape = new Rectangle(start, start, color, fill, gFillOne, gFillTwo, lineThickness);
         } else if (shapeMode == ShapeMode.Ellipse) {
-            shape = new Ellipse(start, start, color, fill, lineThickness);
+            shape = new Ellipse(start, start, color, fill, gFillOne, gFillTwo, lineThickness);
         } else if (shapeMode == ShapeMode.Image) {
             shape = new Picture(start, start, color, appService.getImageFileName(), lineThickness);
         } else if (shapeMode == ShapeMode.Text) {

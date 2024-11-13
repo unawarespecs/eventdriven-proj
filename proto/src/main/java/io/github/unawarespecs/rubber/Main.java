@@ -14,6 +14,7 @@ public class Main {
          splashFrame.setExtendedState(splashFrame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
          splashFrame.setVisible(true);
          splashFrame.repaint();
+         splashFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         }
     }
 

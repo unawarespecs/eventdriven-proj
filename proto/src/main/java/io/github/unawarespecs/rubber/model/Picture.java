@@ -12,7 +12,7 @@ import java.awt.*;
 public class Picture extends Shape {
     String imageFilename;
     public Picture(Point start, Point end, Color color, String imageFilename, int lineThickness){
-        super(start, end, color, null, lineThickness);
+        super(start, end, color, null, null, null, lineThickness);
         this.imageFilename = imageFilename;
         setRenderer(new PictureRenderer());
     }
